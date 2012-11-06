@@ -39,9 +39,12 @@ void randTest()
 {
 	std::default_random_engine generator;
 	std::uniform_int_distribution<int> distribution(1,6);
-	for(int i = 0 ; i < 100; i++ ) {
-	int dice_roll = distribution(generator);
-	std::cout << dice_roll << std::endl;	}
+	for(int i = 0 ; i < 10; i++ )
+	{
+		int dice_roll = distribution(generator);
+		std::cout << dice_roll << " " ;
+	}
+	std::cout << std::endl;
 }
 
 
@@ -49,7 +52,8 @@ void randTest()
 int main()
 {
 	MinesweeperGame game = MinesweeperGame::init(EASY);
-	
+	game.printBoard();
+	// randTest();
 	return 1;
 }
 
