@@ -2,7 +2,8 @@
 #include <random>
 #include <iostream>
 #include <unordered_set>
-
+#include <algorithm>
+#include <array>
 
 MinesweeperGame::MinesweeperGame(int w, int h) :
 width(w), height(h), board(w*h)
@@ -44,19 +45,35 @@ void MinesweeperGame::printBoard()
 		for(int j = 0 ; j < width; j++)
 		{
 			int v = board.at(height*i+j)->getValue();
-			char c = v == BOMB ? 'B' : v;
 			if(v == BOMB)
+			{
 				b_count++;
-			if(v == 0) c = ' ';
-			std::cout << c;
+				std::cout << "B";
+			}
+			else if(v == 0)
+				std::cout << " ";
+			else
+				std::cout << v;
 		}
 		std::cout << "#" << std::endl;
 	}
 	for(int i = 0 ; i < width+2; i++)
 		std::cout << "#" ;
 	std::cout << std::endl;
-	std::cout << "bomb count: " << b_count << std::endl;
+	// std::cout << "bomb count: " << b_count << std::endl;
 
+}
+
+int MinesweeperGame::countBombs(MinesweeperGame& game, int num, ...)
+{
+	std::vector<int> t(num);
+	va_list arguments; 
+	va_start(arguments, num);
+	for(int i = 0 ; i < num; i++)
+		t.at(i) = game.getBoard().at(va_arg(arguments, int))->getValue();
+	va_end(arguments);
+	int val = (int)std::count_if(t.begin(), t.end(), [](int tt){return tt == BOMB;});
+	return val;
 }
 
 MinesweeperGame MinesweeperGame::init(int diff)
@@ -91,10 +108,6 @@ MinesweeperGame MinesweeperGame::init(int diff)
 		int r_value = positions.at(r_index);
 		game.getBoard().at(r_value)->setValue(BOMB);
 		swap(positions, r_index, last--);
-		// int temp = positions.at(r_index);
-		// positions.at(r_index) = positions.at(last);
-		// positions.at(last) = temp;
-		// last--;
 	}
 
 	std::unordered_set<int> corners;
@@ -103,46 +116,67 @@ MinesweeperGame MinesweeperGame::init(int diff)
 	corners.emplace(w-1);
 	corners.emplace(w*h-w);
 
-	std::cout << "corners\n\t";
-	std::cout << 0 << " " << w*h-1 << " " << w-1 << " " << w*h-w << std::endl;
-
 	std::unordered_set<int> top_row;
-	std::cout << "top_row\n\t";
 	for(int i = 1; i < w-1; i++)
-	{
 		top_row.emplace(i);
-		std::cout << i << " " ;
-	}
-	std::cout << std::endl;
 
 
 	std::unordered_set<int> left_row;
-	std::cout << "left_row\n\t";
 	for(int i = w; i < w*h-w; i += h)
-	{
 		left_row.emplace(i);
-		std::cout << i << " " ;
-	}
-	std::cout << std::endl ;
 
 	std::unordered_set<int> right_row;
-	std::cout << "right_row\n\t";
 	for(int i = w*2 - 1; i < w*h-1; i+= h)
-	{
 		right_row.emplace(i);
-		std::cout << i << " " ;
-	}
-	std::cout << std::endl;
 
 	std::unordered_set<int> bottom_row;
-	std::cout << "bottom_row\n\t";
 	for(int i = w*h-w+1; i < w*h-1; i++)
-	{
 		bottom_row.emplace(i);
-		std::cout << i << " " ;			
+	
+	for(int i = 0 ; i < w*h; i++)
+	{
+		if(game.getBoard().at(i)->getValue() == BOMB)
+			continue;
+		if(left_row.find(i) != left_row.end())
+		{
+			int val = countBombs(game, 5, i-w, i-w+1, i+1, i+w, i+w+1);
+			game.getBoard().at(i)->setValue(val);
+		}
+		else if(right_row.find(i) != right_row.end())
+		{
+			int val = countBombs(game, 5, i-w, i-w-1, i-1, i+w, i+w-1);
+			game.getBoard().at(i)->setValue(val);
+		}
+		else if(top_row.find(i) != top_row.end())
+		{
+			int val = countBombs(game, 5, i-1, i+1, i+w, i+w-1, i+w+1);
+			game.getBoard().at(i)->setValue(val);
+		}
+		else if(bottom_row.find(i) != bottom_row.end())
+		{
+			int val = countBombs(game, 5, i-1, i+1, i-w, i-w-1, i-w+1);
+			game.getBoard().at(i)->setValue(val);
+		}
+		else if(corners.find(i) != corners.end())
+		{
+			int val = 0;
+			if(i == 0)
+				val = countBombs(game, 3, i+1, i+w, i+w+1);
+			else if(i == w-1)
+				val = countBombs(game, 3, i-1, i+w-1, i+w);
+			else if(i == w*h-w)
+				val = countBombs(game, 3, i-w, i-w+1, i+1);
+			else
+				val = countBombs(game, 3, i-w, i-w-1, i-1);
+			game.getBoard().at(i)->setValue(val);
+		}
+		else
+		{
+			int val = countBombs(game, 8, i-w-1, i-w, i-w+1, i-1, i+1, i+w-1, i+w, i+w+1);
+			game.getBoard().at(i)->setValue(val);	
+		}
 	}
-	std::cout << std::endl;
-		
+
 	return game;
 
 }

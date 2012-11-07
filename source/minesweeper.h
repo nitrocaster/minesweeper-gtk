@@ -20,7 +20,7 @@ private:
 	std::vector<Tile*> board;
 	int time_remaining;
 	MinesweeperGame(int w, int h);
-
+	static int countBombs(MinesweeperGame& game, int num, ...);
 public:
 	int getHeight();
 	int getWidth();
