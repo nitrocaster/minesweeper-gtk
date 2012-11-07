@@ -21,6 +21,7 @@ private:
 	int time_remaining;
 	MinesweeperGame(int w, int h);
 	static int countBombs(MinesweeperGame& game, int num, ...);
+	
 public:
 	int getHeight();
 	int getWidth();
@@ -29,6 +30,7 @@ public:
 	static MinesweeperGame init(int diff);
 	static void swap(std::vector<int>& a, int i, int j);
 	void printBoard();
+	void exit();
 
 };
 

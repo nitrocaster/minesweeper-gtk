@@ -47,13 +47,24 @@ void randTest()
 	std::cout << std::endl;
 }
 
-
-
-int main()
+void usage()
 {
-	MinesweeperGame game = MinesweeperGame::init(EASY);
+	std::cout << "usage: ./main {EASY, NORMAL, HARD}" << std::endl;
+	exit(1);
+}
+using std::cout; using std::endl;
+int main(int argc, char* argv[])
+{
+	if(argc != 3)
+		usage();
+	int diff = 0;
+	if(std::string(argv[1]) == "-l")
+		diff = atoi(argv[2]);
+	else
+		usage();
+	MinesweeperGame game = MinesweeperGame::init(diff);
 	game.printBoard();
-	// randTest();
+	game.exit();
 	return 1;
 }
 
