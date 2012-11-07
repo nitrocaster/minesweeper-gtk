@@ -27,7 +27,7 @@ public:
 	std::vector<Tile*> getBoard();
 
 	static MinesweeperGame init(int diff);
-	static void swap(std::vector<int> a, int i, int j);
+	static void swap(std::vector<int>& a, int i, int j);
 	void printBoard();
 
 };
