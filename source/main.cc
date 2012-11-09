@@ -4,6 +4,8 @@
 #include <iostream>
 #include <cassert>
 #include <random>
+#include <string>
+#include <sstream>
 
 void tileTest()
 {
@@ -52,7 +54,36 @@ void usage()
 	std::cout << "usage: ./main {EASY, NORMAL, HARD}" << std::endl;
 	exit(1);
 }
+
 using std::cout; using std::endl;
+
+void playGame(MinesweeperGame& game)
+{
+	std::string s ;
+	int r = 0, c = 0;
+	while(game.isLive())
+	{
+		game.printGameBoard();
+		cout << "Enter row: ";
+		getline(std::cin, s);
+		if(s == "exit") break;
+		std::stringstream(s) >> r;
+		cout << "Enter column: ";
+		getline(std::cin, s);
+		if(s == "exit") break;
+		std::stringstream(s) >> c;
+		int ok = game.click(r, c);
+		if(!ok)
+			printf("(%d, %d) is not a valid point.\n", r, c);
+
+
+
+
+	}
+	std::cout << "Thanks for playing!" << std::endl;
+	game.exit();
+}
+
 int main(int argc, char* argv[])
 {
 	if(argc != 3)
@@ -62,9 +93,12 @@ int main(int argc, char* argv[])
 		diff = atoi(argv[2]);
 	else
 		usage();
+	std::cout << "Welcome to Minesweeper! (exit) to quit the game" << std::endl;
 	MinesweeperGame game = MinesweeperGame::init(diff);
-	game.printBoard();
-	game.exit();
+	// game.printTrueBoard();
+	// game.printGameBoard();
+	// game.exit();
+	playGame(game);
 	return 1;
 }
 

@@ -17,20 +17,27 @@ class MinesweeperGame
 private:
 	int width;
 	int height;
+	int num_mines;
 	std::vector<Tile*> board;
 	int time_remaining;
-	MinesweeperGame(int w, int h);
+	bool live;
+	int num_open;
+	MinesweeperGame(int w, int h, int m);
 	static int countBombs(MinesweeperGame& game, int num, ...);
-	
+
 public:
 	int getHeight();
 	int getWidth();
+	int getNumMines();
+	bool isLive();
 	std::vector<Tile*> getBoard();
 
 	static MinesweeperGame init(int diff);
 	static void swap(std::vector<int>& a, int i, int j);
-	void printBoard();
+	void printTrueBoard();
+	void printGameBoard();
 	void exit();
+	int click(int r, int c);
 
 };
 

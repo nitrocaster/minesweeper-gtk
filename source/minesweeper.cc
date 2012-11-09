@@ -8,8 +8,9 @@
 
 int DEBUG = false;
 
-MinesweeperGame::MinesweeperGame(int w, int h) :
-width(w), height(h), board(w*h)
+MinesweeperGame::MinesweeperGame(int w, int h, int m) :
+width(w), height(h), num_mines(m), board(w*h), time_remaining(0), live(true),
+num_open(w*h)
 {
 	for(int i = 0 ; i < w*h; i++)
 		board.at(i) = new Tile();
@@ -22,6 +23,14 @@ int MinesweeperGame::getHeight()
 int MinesweeperGame::getWidth()
 {
 	return width;
+}
+int MinesweeperGame::getNumMines()
+{
+	return num_mines;
+}
+bool MinesweeperGame::isLive()
+{
+	return live;
 }
 
 void MinesweeperGame::swap(std::vector<int>& a, int i, int j)
@@ -36,13 +45,26 @@ std::vector<Tile*> MinesweeperGame::getBoard()
 	return board;
 }
 
-void MinesweeperGame::printBoard()
+void MinesweeperGame::printTrueBoard()
 {
+	std::cout << "   ";
+	for(int i = 0 ; i < width ; i++)
+		std::cout << (i/10);
+	std::cout << std::endl;
+	std::cout << "   ";
+	for(int i = 0; i < width; i++)
+		std::cout << (i%10);
+	std::cout << std::endl;
+
+	std::cout << "  " ;
 	for(int i = 0 ; i < width+2; i++)
 		std::cout << "#" ;
 	std::cout << std::endl;
 	for(int i = 0; i < height; i++)
 	{
+		if(i < 10)
+			std::cout << "0";
+		std::cout << i ;
 		std::cout << "#";
 		for(int j = 0 ; j < width; j++)
 		{
@@ -56,10 +78,55 @@ void MinesweeperGame::printBoard()
 		}
 		std::cout << "#" << std::endl;
 	}
+	std::cout << "  ";
 	for(int i = 0 ; i < width+2; i++)
 		std::cout << "#" ;
 	std::cout << std::endl;
 }
+
+void MinesweeperGame::printGameBoard()
+{
+	std::cout << "   ";
+	for(int i = 0 ; i < width ; i++)
+		std::cout << (i/10);
+	std::cout << std::endl;
+	std::cout << "   ";
+	for(int i = 0; i < width; i++)
+		std::cout << (i%10);
+	std::cout << std::endl;
+
+	std::cout << "  " ;
+	for(int i = 0 ; i < width+2; i++)
+		std::cout << "#" ;
+	std::cout << std::endl;
+	for(int i = 0; i < height; i++)
+	{
+		if(i < 10)
+			std::cout << "0";
+		std::cout << i ;
+		std::cout << "#";
+		for(int j = 0 ; j < width; j++)
+		{
+			if(!board.at(width*i+j)->isClicked())
+				std::cout << "_";
+			else
+			{
+				int temp = board.at(width*i+j)->getValue();
+				if(temp == 0)
+					std::cout << " ";
+				else
+					std::cout << temp;
+			}
+				
+		}
+		std::cout << "#" << std::endl;
+	}
+	std::cout << "  ";
+	for(int i = 0 ; i < width+2; i++)
+		std::cout << "#" ;
+	std::cout << std::endl;
+}
+
 
 int MinesweeperGame::countBombs(MinesweeperGame& game, int num, ...)
 {
@@ -97,7 +164,10 @@ MinesweeperGame MinesweeperGame::init(int diff)
 		case NORMAL:
 			w = 16; h = 16; m = 40;
 	}
-	MinesweeperGame game(w,h);
+	MinesweeperGame game(w,h,m);
+	if(DEBUG)
+		printf("weight: %d, height: %d, mines: %d\n", game.getWidth(), game.getHeight(), game.getNumMines());
+
 	std::vector<int> positions(w*h);
 	for(int i = 0 ; i < w*h ; i++)
 		positions.at(i) = i;
@@ -183,6 +253,16 @@ void MinesweeperGame::exit()
 		delete board.at(i);
 }
 
+int MinesweeperGame::click(int r, int c)
+{
+	if(r < 0 || c < 0 || r >= height || c >= width)
+		return 0;
+	int safe = board.at(width*r+c)->click();
+	num_open--;
+	if(!safe || num_open == 0)
+		live = false;
+	return 1;
+}
 
 
 
