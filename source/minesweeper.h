@@ -45,7 +45,7 @@ public:
 	int getHeight();
 	int getWidth();
 	int getNumMines();
-
+	int getNumOpen();
 	
 	bool isLive();
 	std::vector<Tile*> getBoard();

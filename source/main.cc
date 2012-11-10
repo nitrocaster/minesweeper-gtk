@@ -64,8 +64,6 @@ void playGame(MinesweeperGame& game)
 		int r = 0, c = 0;
 	while(game.isLive())
 	{
-		cout << "hi" << endl;
-		
 		game.printGameBoard();
 		std::cout << "Enter command: ";
 		getline(std::cin, s);
@@ -102,8 +100,12 @@ void playGame(MinesweeperGame& game)
 		{
 			cout << "bad input?" << endl;
 		}
-
 	}
+	game.printGameBoard();
+	if(game.getNumOpen() != 0)
+		std::cout << "You lose :(" << std::endl;
+	else
+		std::cout << "You win! :)" << std::endl;
 	std::cout << "Thanks for playing!" << std::endl;
 	game.exit();
 }

@@ -9,7 +9,7 @@ int DEBUG = false;
 
 MinesweeperGame::MinesweeperGame(int w, int h, int m) :
 width(w), height(h), num_mines(m), board(w*h), time_remaining(0), live(true),
-num_open(w*h)
+num_open(w*h-m)
 {
 	for(int i = 0 ; i < w*h; i++)
 		board.at(i) = new Tile();
@@ -42,6 +42,10 @@ int MinesweeperGame::getNumMines()
 bool MinesweeperGame::isLive()
 {
 	return live;
+}
+int MinesweeperGame::getNumOpen()
+{
+	return num_open;
 }
 
 void MinesweeperGame::swap(std::vector<int>& a, int i, int j)
@@ -130,6 +134,8 @@ void MinesweeperGame::printGameBoard()
 				int temp = board.at(width*i+j)->getValue();
 				if(temp == 0)
 					std::cout << " ";
+				else if(temp == BOMB)
+					std::cout << "B";
 				else
 					std::cout << temp;
 			}
@@ -277,8 +283,13 @@ int MinesweeperGame::click(int r, int c)
 			tile_loc temp_tl = q.front();
 			q.pop();
 			Tile* temp_t = temp_tl.t;
-			temp_t->click();
-			num_open--;
+			if(!temp_t->isClicked())
+			{
+				temp_t->click();
+				num_open--;	
+			}
+			if(num_open == 0)
+				live = false;
 			if(temp_t->getValue() != 0)
 				continue;
 			int i = temp_tl.loc;
