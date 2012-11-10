@@ -119,7 +119,12 @@ void MinesweeperGame::printGameBoard()
 		for(int j = 0 ; j < width; j++)
 		{
 			if(!board.at(width*i+j)->isClicked())
-				std::cout << "_";
+			{
+				if(board.at(width*i+j)->isMarked())
+					std::cout << "@";
+				else
+					std::cout << "_";	
+			}
 			else
 			{
 				int temp = board.at(width*i+j)->getValue();
@@ -248,7 +253,15 @@ void MinesweeperGame::addAdjacent(std::queue<tile_loc>& q, int num, ...)
 	va_end(arguments);
 }
 
-
+void MinesweeperGame::mark(int r, int c)
+{
+	if(r < 0 || c < 0 || r >= height || c >= width)
+		return;
+	if(board.at(width*r+c)->isClicked())
+		return;
+	board.at(width*r+c)->mark();	
+	std::cout << "marked" << std::endl;
+}
 
 int MinesweeperGame::click(int r, int c)
 {
@@ -261,7 +274,6 @@ int MinesweeperGame::click(int r, int c)
 		q.push(tl);
 		while(!q.empty())
 		{
-			std::cout << "hi" << std::endl;
 			tile_loc temp_tl = q.front();
 			q.pop();
 			Tile* temp_t = temp_tl.t;
@@ -302,7 +314,6 @@ int MinesweeperGame::click(int r, int c)
 		if(!safe || num_open == 0)
 			live = false;		
 	}
-
 	return 1;
 }
 

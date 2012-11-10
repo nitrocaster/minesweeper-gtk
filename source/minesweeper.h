@@ -56,6 +56,7 @@ public:
 	void printGameBoard();
 	void exit();
 	int click(int r, int c);
+	void mark(int r, int c);
 
 };
 
