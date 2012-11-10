@@ -4,6 +4,14 @@
 #include "tile.h"
 
 #include <vector>
+#include <unordered_set>
+#include <queue>
+
+typedef struct
+{
+	Tile* t;
+	int loc;
+}tile_loc;
 
 enum DIFFICULTY
 {
@@ -22,13 +30,23 @@ private:
 	int time_remaining;
 	bool live;
 	int num_open;
+
+	std::unordered_set<int> corners;
+	std::unordered_set<int> left_row;
+	std::unordered_set<int> right_row;
+	std::unordered_set<int> top_row;
+	std::unordered_set<int> bottom_row;
+
 	MinesweeperGame(int w, int h, int m);
 	static int countBombs(MinesweeperGame& game, int num, ...);
+	void addAdjacent(std::queue<tile_loc>& q, int num, ...);
 
 public:
 	int getHeight();
 	int getWidth();
 	int getNumMines();
+
+	
 	bool isLive();
 	std::vector<Tile*> getBoard();
 

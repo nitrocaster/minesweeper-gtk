@@ -1,7 +1,6 @@
 #include "minesweeper.h"
 #include <random>
 #include <iostream>
-#include <unordered_set>
 #include <algorithm>
 #include <array>
 #include <string>
@@ -14,6 +13,18 @@ num_open(w*h)
 {
 	for(int i = 0 ; i < w*h; i++)
 		board.at(i) = new Tile();
+	corners.emplace(0);
+	corners.emplace(w*h-1);
+	corners.emplace(w-1);
+	corners.emplace(w*h-w);
+	for(int i = 1; i < w-1; i++)
+		top_row.emplace(i);
+	for(int i = w; i < w*h-w; i += w)
+		left_row.emplace(i);
+	for(int i = w*2 - 1; i < w*h-1; i+= w)
+		right_row.emplace(i);
+	for(int i = w*h-w+1; i < w*h-1; i++)
+		bottom_row.emplace(i);
 }
 
 int MinesweeperGame::getHeight()
@@ -182,53 +193,21 @@ MinesweeperGame MinesweeperGame::init(int diff)
 		game.getBoard().at(r_value)->setValue(BOMB);
 		swap(positions, r_index, last--);
 	}
-
-	std::unordered_set<int> corners;
-	corners.emplace(0);
-	corners.emplace(w*h-1);
-	corners.emplace(w-1);
-	corners.emplace(w*h-w);
-	if(DEBUG)
-		print_set("corners", corners);
-
-	std::unordered_set<int> top_row;
-	for(int i = 1; i < w-1; i++)
-		top_row.emplace(i);
-	if(DEBUG)
-		print_set("top_row", top_row);
-
-	std::unordered_set<int> left_row;
-	for(int i = w; i < w*h-w; i += w)
-		left_row.emplace(i);
-	if(DEBUG)
-		print_set("left_row", left_row);
-
-	std::unordered_set<int> right_row;
-	for(int i = w*2 - 1; i < w*h-1; i+= w)
-		right_row.emplace(i);
-	if(DEBUG)
-		print_set("right_row", right_row);
-
-	std::unordered_set<int> bottom_row;
-	for(int i = w*h-w+1; i < w*h-1; i++)
-		bottom_row.emplace(i);
-	if(DEBUG)
-		print_set("bottom_row", bottom_row);
 	
 	for(int i = 0 ; i < w*h; i++)
 	{
 		if(game.getBoard().at(i)->getValue() == BOMB)
 			continue;
 		int val = 0;
-		if(left_row.find(i) != left_row.end())
+		if(game.left_row.find(i) != game.left_row.end())
 			val = countBombs(game, 5, i-w, i-w+1, i+1, i+w, i+w+1);
-		else if(right_row.find(i) != right_row.end())
+		else if(game.right_row.find(i) != game.right_row.end())
 			val = countBombs(game, 5, i-w, i-w-1, i-1, i+w, i+w-1);
-		else if(top_row.find(i) != top_row.end())
+		else if(game.top_row.find(i) != game.top_row.end())
 			val = countBombs(game, 5, i-1, i+1, i+w, i+w-1, i+w+1);
-		else if(bottom_row.find(i) != bottom_row.end())
+		else if(game.bottom_row.find(i) != game.bottom_row.end())
 			val = countBombs(game, 5, i-1, i+1, i-w, i-w-1, i-w+1);
-		else if(corners.find(i) != corners.end())
+		else if(game.corners.find(i) != game.corners.end())
 		{
 			if(i == 0)
 				val = countBombs(game, 3, i+1, i+w, i+w+1);
@@ -253,14 +232,77 @@ void MinesweeperGame::exit()
 		delete board.at(i);
 }
 
+void MinesweeperGame::addAdjacent(std::queue<tile_loc>& q, int num, ...)
+{
+	va_list arguments; 
+	va_start(arguments, num);
+	for(int i = 0 ; i < num; i++)
+	{
+		int loc = va_arg(arguments, int);
+		if(board.at(loc)->isClicked())
+			continue;
+		tile_loc temp_tl = {board.at(loc), loc};
+		q.push(temp_tl);
+	}
+		
+	va_end(arguments);
+}
+
+
+
 int MinesweeperGame::click(int r, int c)
 {
 	if(r < 0 || c < 0 || r >= height || c >= width)
 		return 0;
-	int safe = board.at(width*r+c)->click();
-	num_open--;
-	if(!safe || num_open == 0)
-		live = false;
+	if(board.at(width*r+c)->getValue() == 0)
+	{
+		std::queue<tile_loc> q;
+		tile_loc tl = {board.at(width*r+c), width*r+c};
+		q.push(tl);
+		while(!q.empty())
+		{
+			std::cout << "hi" << std::endl;
+			tile_loc temp_tl = q.front();
+			q.pop();
+			Tile* temp_t = temp_tl.t;
+			temp_t->click();
+			num_open--;
+			if(temp_t->getValue() != 0)
+				continue;
+			int i = temp_tl.loc;
+			int w = width;
+			int h = height;
+			if(left_row.find(i) != left_row.end())
+				addAdjacent(q, 5, i-w, i-w+1, i+1, i+w, i+w+1);
+			else if(right_row.find(i) != right_row.end())
+				addAdjacent(q, 5, i-w, i-w-1, i-1, i+w, i+w-1);
+			else if(top_row.find(i) != top_row.end())
+				addAdjacent(q, 5, i-1, i+1, i+w, i+w-1, i+w+1);
+			else if(bottom_row.find(i) != bottom_row.end())
+				addAdjacent(q, 5, i-1, i+1, i-w, i-w-1, i-w+1);
+			else if(corners.find(i) != corners.end())
+			{
+				if(i == 0)
+					addAdjacent(q, 3, i+1, i+w, i+w+1);
+				else if(i == w-1)
+					addAdjacent(q, 3, i-1, i+w-1, i+w);
+				else if(i == w*h-w)
+					addAdjacent(q, 3, i-w, i-w+1, i+1);
+				else
+					addAdjacent(q, 3, i-w, i-w-1, i-1);
+			}
+			else
+				addAdjacent(q, 8, i-w-1, i-w, i-w+1, i-1, i+1, i+w-1, i+w, i+w+1);
+		}
+	}
+	else
+	{
+		int safe = board.at(width*r+c)->click();
+		num_open--;
+		if(!safe || num_open == 0)
+			live = false;		
+	}
+
 	return 1;
 }
 
