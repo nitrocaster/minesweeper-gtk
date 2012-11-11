@@ -7,51 +7,9 @@
 #include <string>
 #include <sstream>
 
-void tileTest()
-{
-	Tile t1(1);
-	Tile t2(2);
-	std::cout << t1 << std::endl;
-	std::cout << t2 << std::endl;
-	assert(t1.getValue() == 1);
-	assert(t2.getValue() == 2);
-	assert(t1.isMarked() == false);
-	assert(t2.isMarked() == false);
-	t1.mark();
-	assert(t1.isMarked());
-	t1.mark();
-	assert(!t1.isMarked());
-	t2.mark();
-	assert(t2.isMarked());
-	assert(!t1.isClicked());
-	assert(t1.click());
-	assert(t1.isClicked());
-	assert(t2.click());
-	Tile tb(BOMB);
-	std::cout << t1 << std::endl;
-	std::cout << t2 << std::endl;
-	std::cout << tb << std::endl;
-	assert(!tb.isClicked());
-	assert(!tb.click());
-
-
-}
-
-void randTest()
-{
-	std::default_random_engine generator;
-	std::uniform_int_distribution<int> distribution(1,6);
-	for(int i = 0 ; i < 10; i++ )
-	{
-		int dice_roll = distribution(generator);
-		std::cout << dice_roll << " " ;
-	}
-	std::cout << std::endl;
-}
-
 void usage()
 {
-	std::cout << "usage: ./main {EASY, NORMAL, HARD}" << std::endl;
+	std::cout << "usage: ./main -l {EASY=1, NORMAL=2, HARD=3}" << std::endl;
 	exit(1);
 }
 
@@ -67,7 +25,8 @@ void playGame(MinesweeperGame& game)
 		game.printGameBoard();
 		std::cout << "Enter command: ";
 		getline(std::cin, s);
-		if(s == "exit") break;
+		if(s == "exit")
+			break;
 		size_t space_pos = s.find(" ");
 		size_t space_pos2 = 0;
 		if(space_pos == (std::string::npos))
@@ -101,11 +60,14 @@ void playGame(MinesweeperGame& game)
 			cout << "bad input?" << endl;
 		}
 	}
-	game.printGameBoard();
-	if(game.getNumOpen() != 0)
-		std::cout << "You lose :(" << std::endl;
-	else
-		std::cout << "You win! :)" << std::endl;
+	if(s != "exit")
+	{
+		game.printGameBoard();
+		if(game.getNumOpen() != 0)
+			std::cout << "You lose :(" << std::endl;
+		else
+			std::cout << "You win! :)" << std::endl;	
+	}
 	std::cout << "Thanks for playing!" << std::endl;
 	game.exit();
 }
@@ -116,7 +78,7 @@ int main(int argc, char* argv[])
 		usage();
 	int diff = 0;
 	if(std::string(argv[1]) == "-l")
-		diff = atoi(argv[2]);
+		diff = atoi(argv[2]);		
 	else
 		usage();
 	std::cout << "Welcome to Minesweeper!" << std::endl;
