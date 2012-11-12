@@ -187,9 +187,6 @@ MinesweeperGame MinesweeperGame::init(int diff)
 			w = 16; h = 16; m = 40;
 	}
 	MinesweeperGame game(w,h,m);
-	if(DEBUG)
-		printf("weight: %d, height: %d, mines: %d\n", game.getWidth(), game.getHeight(), game.getNumMines());
-
 	std::vector<int> positions(w*h);
 	for(int i = 0 ; i < w*h ; i++)
 		positions.at(i) = i;
@@ -266,7 +263,6 @@ void MinesweeperGame::mark(int r, int c)
 	if(board.at(width*r+c)->isClicked())
 		return;
 	board.at(width*r+c)->mark();	
-	std::cout << "marked" << std::endl;
 }
 
 int MinesweeperGame::click(int r, int c)

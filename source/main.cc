@@ -30,34 +30,26 @@ void playGame(MinesweeperGame& game)
 		size_t space_pos = s.find(" ");
 		size_t space_pos2 = 0;
 		if(space_pos == (std::string::npos))
-		{
-			std::cout << s << " is a bad input." << std::endl;
-			continue;
-		}
+			goto bad_input;
 		space_pos2 = s.find(" ", space_pos+1);
 		if(space_pos2 == (std::string::npos))
-		{
-			std::cout << s << " is a bad input." << std::endl;
-			continue;
-		}
+			goto bad_input;
 		std::stringstream(s.substr(space_pos+1, space_pos2-space_pos-1)) >> r;
 		std::stringstream(s.substr(space_pos2+1)) >> c;
 		printf("row: %d, col: %d\n", r, c);
 		if(s.at(0) == 'c')
 		{
-			cout << "clicking..." << endl;
 			int ok = game.click(r, c);
 			if(!ok)
 				printf("(%d, %d) is not a valid point.\n", r, c);		
 		}
 		else if(s.at(0) == 'm')
-		{
-			cout << "marking..." << endl;
 			game.mark(r, c);
-		}
 		else
 		{
-			cout << "bad input?" << endl;
+			bad_input:
+			std::cout << s << " is a bad input." << std::endl;
+			continue;
 		}
 	}
 	if(s != "exit")
