@@ -6,7 +6,7 @@
 #include <string>
 
 // linux
-#include <cstdarg>
+#include <stdarg>
 
 int DEBUG = false;
 

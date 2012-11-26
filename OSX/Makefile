@@ -9,8 +9,8 @@ SRCDIR  := source
 SOURCES := $(shell find $(SRCDIR) -name "*.cc")
 OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
 
-CC      := g++
-CFLAGS  := -std=c++11 -pedantic -Wall -Werror -Weffc++ -Wextra -Wshadow -g
+CC      := clang++
+CFLAGS  := -std=c++11 -pedantic -Wall -Werror -Weffc++ -Wextra -Wshadow -stdlib=libc++ -g
 
 all: execme
 
