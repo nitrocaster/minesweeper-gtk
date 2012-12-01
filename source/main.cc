@@ -9,7 +9,7 @@
 
 void usage()
 {
-	std::cout << "usage: ./main -l {EASY=1, NORMAL=2, HARD=3}" << std::endl;
+	std::cout << "usage: ./main -l {1, 2, 3} (1=easy, 2=normal, 3=hard)" << std::endl;
 	exit(1);
 }
 
@@ -80,8 +80,6 @@ int main(int argc, char* argv[])
 	std::cout << "\tExit: exit" << std::endl;
 	MinesweeperGame game = MinesweeperGame::init(diff);
 	playGame(game);
-	// std::string asd = "abcdef";
-	// std::cout << (asd.find("4")==std::string::npos) << endl;
 	return 1;
 }
 
