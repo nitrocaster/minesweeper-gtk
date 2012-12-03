@@ -9,7 +9,7 @@ classic minesweeper game
 
 -> current: cmdline version 
 
-~~ -> aim: nintendo ds version ~~
+~~-> aim: nintendo ds version~~
 
 -> current: gui via gtkmm 2.x
 
