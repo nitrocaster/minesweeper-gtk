@@ -7,7 +7,7 @@
 
 #include "tile.h"
 #include "minesweeper.h"
-#include "MineToggleButton.h"
+#include "minetogglebutton.h"
 #include <vector>
 
 typedef Gtk::Button Button;

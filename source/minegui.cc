@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 
-#include "MineToggleButton.h"
+#include "minetogglebutton.h"
 
 using std::cout;
 using std::endl;
