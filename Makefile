@@ -12,10 +12,13 @@ OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
 CC      := g++
 CFLAGS  := -std=c++11 -pedantic -Wall -Werror -Weffc++ -Wextra -Wshadow -g
 
-all: execme
+all: guiexec
+
+guiexec: $(OBJECTS)
+	$(CC) -std=c++11 $^ `pkg-config --cflags --libs gtkmm-2.4` -o main 
 
 execme: $(OBJECTS)
 	$(CC) $(CFLAGS) $^ -o main
 
 clean:
-	rm -rf *.out *.o main main.dSYM
+	rm -rf *.out *.o *~ source/*~ main main.dSYM

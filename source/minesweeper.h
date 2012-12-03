@@ -37,7 +37,6 @@ private:
 	std::unordered_set<int> top_row;
 	std::unordered_set<int> bottom_row;
 
-	MinesweeperGame(int w, int h, int m);
 	static int countBombs(MinesweeperGame& game, int num, ...);
 	void addAdjacent(std::queue<tile_loc>& q, int num, ...);
 
@@ -49,7 +48,9 @@ public:
 	
 	bool isLive();
 	std::vector<Tile*> getBoard();
-
+	
+	MinesweeperGame();
+        MinesweeperGame(int w, int h, int m);
 	static MinesweeperGame init(int diff);
 	static void swap(std::vector<int>& a, int i, int j);
 	void printTrueBoard();

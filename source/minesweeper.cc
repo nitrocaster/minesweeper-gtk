@@ -10,6 +10,9 @@
 
 int DEBUG = false;
 
+MinesweeperGame::MinesweeperGame()
+{}
+
 MinesweeperGame::MinesweeperGame(int w, int h, int m) :
 width(w), height(h), num_mines(m), board(w*h), time_remaining(0), live(true),
 num_open(w*h-m), corners(), left_row(), right_row(), top_row(), bottom_row()
