@@ -11,7 +11,7 @@ bool MineToggleButton::on_button_press_event(GdkEventButton *event)
 bool MineToggleButton::on_button_release_event(GdkEventButton *event)
 {
 if(this->get_active())
-                return true;
+        return true;
       if(event->button == 3)
       {
         delete this->get_image();

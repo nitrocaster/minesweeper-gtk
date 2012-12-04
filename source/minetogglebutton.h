@@ -26,8 +26,7 @@ class MineToggleButton : public Gtk::ToggleButton
     MinesweeperGame *getGame() { return game; }
     
     virtual bool on_button_press_event(GdkEventButton *event);
-    
-    virtual bool on_button_release_event(GdkEventButton *event) { }
+    virtual bool on_button_release_event(GdkEventButton *event);
 };
 
 #endif
