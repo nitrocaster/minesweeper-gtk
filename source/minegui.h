@@ -23,13 +23,12 @@ public:
 protected:
   int width;
   int height;
+  MinesweeperGame game;
+  std::vector<MineToggleButton*> b_tiles;
   //Signal handlers:
   void on_button_clicked();
-
-  MinesweeperGame game;//(int,int,int);
-
+  
   //Member widgets:
-  std::vector<MineToggleButton*> b_tiles;
   Gtk::Table grid;
   Gtk::Table container;
   

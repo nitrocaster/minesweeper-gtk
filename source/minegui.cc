@@ -30,7 +30,6 @@ MineGui::MineGui(int d)
       b_tiles.push_back(temp);
     }
   }
-  // Sets the border width of the window.
   set_border_width(25);
   
   for(int i = 0; i < h; i++)
