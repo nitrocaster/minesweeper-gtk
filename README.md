@@ -10,3 +10,13 @@ classic minesweeper game
 -> current: gui via gtkmm 2.x
 
 
+## build instructions
+
+    $ git clone git@github.com:mlfong/minesweeper-gtk.git
+    $ make
+
+## run instructions
+    
+    $ ./Minesweeper
+
+Or double-click the generated executable
