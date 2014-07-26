@@ -11,6 +11,10 @@
 *.la
 *.a
 
+# Eclipse project files
+.project
+.cproject
+
 # Debug
 main.dSYM/
 
