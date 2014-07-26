@@ -1,22 +1,19 @@
-minesweeper-nds
-===============
-
-cs-2804 final project: minesweeper game : c++ game using gtkmm2
+minesweeper-gtk
+================
 
 ## about
 
-classic minesweeper game
-
--> current: gui via gtkmm 2.x
-
+Classic minesweeper game written on C++.
+Uses gtkmm 2.x for UI.
+Original forked from mlfong/minesweeper-gtk
 
 ## build instructions
 
-    $ git clone git@github.com:mlfong/minesweeper-gtk.git
+    $ git clone git@github.com:nitrocaster/minesweeper-gtk.git
     $ make
 
 ## run instructions
     
     $ ./Minesweeper
 
-Or double-click the generated executable
+or double-click the generated executable.
