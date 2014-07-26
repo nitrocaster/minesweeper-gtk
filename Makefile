@@ -1,8 +1,4 @@
-# ---------------------------
 # Makefile
-#
-# mlfong
-# ---------------------------
 
 SRCDIR  := source
 
@@ -21,4 +17,4 @@ execme: $(OBJECTS)
 	$(CC) $(CFLAGS) $^ -o main
 
 clean:
-	rm -rf *.out *.o *~ source/*~ Minesweeper main main.dSYM
+	rm -rf *.out *.o *~ $(SRCDIR)/*~ Minesweeper main main.dSYM
