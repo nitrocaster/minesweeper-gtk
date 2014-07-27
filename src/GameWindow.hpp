@@ -13,12 +13,12 @@
 typedef Gtk::Button Button;
 typedef Gtk::ToggleButton ToggleButton;
 
-class MineGui : public Gtk::Window
+class GameWindow : public Gtk::Window
 {
 
 public:
-  MineGui(int);
-  virtual ~MineGui();
+  GameWindow(int);
+  virtual ~GameWindow();
 
 protected:
   int width;

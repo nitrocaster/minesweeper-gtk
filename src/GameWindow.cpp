@@ -10,7 +10,7 @@ using std::endl;
 using std::string;
 using std::ostringstream;
 
-MineGui::MineGui(int d)
+GameWindow::GameWindow(int d)
 {
   game = MinesweeperGame::init(d);
   int w = game.getWidth();
@@ -26,7 +26,7 @@ MineGui::MineGui(int d)
       temp->setCol(j);
       temp->setGame(&game);
       temp->setTiles(&b_tiles);
-      temp->signal_clicked().connect(sigc::mem_fun(*this, &MineGui::on_button_clicked));
+      temp->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::on_button_clicked));
       b_tiles.push_back(temp);
     }
   }
@@ -53,7 +53,7 @@ MineGui::MineGui(int d)
   set_title("Minesweeper");
 }
 
-MineGui::~MineGui()
+GameWindow::~GameWindow()
 {
   for(int i = 0 ; i < game.getWidth()*game.getHeight(); i++)
   {
@@ -63,7 +63,7 @@ MineGui::~MineGui()
 }
 
 
-void MineGui::on_button_clicked()
+void GameWindow::on_button_clicked()
 {
 }
 
