@@ -1,4 +1,4 @@
-#include "minetogglebutton.h"
+#include "MineToggleButton.hpp"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -15,7 +15,7 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
   if(event->button == 3)
   {
     delete this->get_image();
-    Gtk::Image* temp = clickFlag ? new Gtk::Image("images/0.png") : new Gtk::Image("images/flag.png");
+    Gtk::Image* temp = clickFlag ? new Gtk::Image("res/0.png") : new Gtk::Image("res/flag.png");
     this->set_image(*temp);
     temp->show();
     clickFlag = ~clickFlag;
@@ -33,13 +33,13 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
   int v = game->getBoard().at(w*i+j)->getValue();
   Gtk::Image* temp;
   if(v == BOMB)
-    temp = new Gtk::Image("images/mine.png");
+    temp = new Gtk::Image("res/mine.png");
   else
   {
     std::string image_path;
     std::ostringstream convert;
     convert << v;
-  image_path = "images/" + convert.str() + ".png";
+  image_path = "res/" + convert.str() + ".png";
     temp = new Gtk::Image(image_path);
   }
   this->set_image(*temp);
@@ -57,13 +57,13 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
           delete tiles->at(loc)->get_image();
           v = game->getBoard().at(loc)->getValue();
           if(v == BOMB)
-            temp = new Gtk::Image("images/mine.png");
+            temp = new Gtk::Image("res/mine.png");
           else
           {
             std::string image_path;
             std::ostringstream convert;
             convert << v;
-            image_path = "images/" + convert.str() + ".png";
+            image_path = "res/" + convert.str() + ".png";
             temp = new Gtk::Image(image_path);
           }
           tiles->at(loc)->set_image(*temp);

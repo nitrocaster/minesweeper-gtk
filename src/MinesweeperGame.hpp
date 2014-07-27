@@ -1,7 +1,7 @@
 #ifndef MINESWEEPER_H
 #define MINESWEEPER_H
 
-#include "tile.h"
+#include "Tile.hpp"
 
 #include <vector>
 #include <unordered_set>

@@ -5,9 +5,9 @@
 #include <gtkmm/window.h>
 #include <gtkmm.h>
 
-#include "tile.h"
-#include "minesweeper.h"
-#include "minetogglebutton.h"
+#include "Tile.hpp"
+#include "MinesweeperGame.hpp"
+#include "MineToggleButton.hpp"
 #include <vector>
 
 typedef Gtk::Button Button;

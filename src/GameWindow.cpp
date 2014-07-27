@@ -1,9 +1,9 @@
-#include "minegui.h"
+#include "GameWindow.hpp"
 #include <iostream>
 #include <string>
 #include <sstream>
 
-#include "minetogglebutton.h"
+#include "MineToggleButton.hpp"
 
 using std::cout;
 using std::endl;
@@ -37,7 +37,7 @@ MineGui::MineGui(int d)
     for(int j = 0; j < w; j++)
     {
       int v = game.getBoard().at(w*i+j)->getValue();
-      Gtk::Image* temp = new Gtk::Image("images/0.png");
+      Gtk::Image* temp = new Gtk::Image("res/0.png");
       b_tiles.at(w*i+j)->set_image(*temp);
       (temp)->show();
       grid.attach(*b_tiles.at(w*i+j), j, j+1, i, i+1);

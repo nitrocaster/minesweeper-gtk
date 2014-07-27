@@ -2,7 +2,7 @@
 
 SRCDIR  := src
 
-SOURCES := $(shell find $(SRCDIR) -name "*.cc")
+SOURCES := $(shell find $(SRCDIR) -name "*.cpp")
 OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
 
 CC      := g++

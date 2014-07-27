@@ -1,4 +1,4 @@
-#include "minesweeper.h"
+#include "MinesweeperGame.hpp"
 #include <random>
 #include <iostream>
 #include <algorithm>

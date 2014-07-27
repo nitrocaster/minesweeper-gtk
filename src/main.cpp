@@ -1,4 +1,4 @@
-#include "minegui.h"
+#include "GameWindow.hpp"
 #include <iostream>
 #include <gtkmm/main.h>
 

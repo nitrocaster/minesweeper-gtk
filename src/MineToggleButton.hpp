@@ -3,7 +3,7 @@
 
 #include "gtkmm/togglebutton.h"
 #include "gtkmm.h"
-#include "minesweeper.h"
+#include "MinesweeperGame.hpp"
 
 #include <vector>
 
