@@ -1,11 +1,10 @@
-#include "MineToggleButton.hpp"
 #include <iostream>
 #include <string>
 #include <sstream>
+#include "MineToggleButton.hpp"
 
 bool MineToggleButton::on_button_press_event(GdkEventButton *event)
 {
-    
 }
 
 bool MineToggleButton::on_button_release_event(GdkEventButton *event)
@@ -74,27 +73,9 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
   }
   if(!game->isLive())
   {
-    std::string msg = game->getNumOpen() ? "You lose =(" : "You win!" ;
-    Gtk::MessageDialog dialog(msg, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE );
+    std::string msg = game->getNumOpen() ? "You lose =(" : "You win!";
+    Gtk::MessageDialog dialog(msg, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
     dialog.run();
     Gtk::Main::quit();
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -42,9 +42,3 @@ int Tile::click()
 	clicked = true;
 	return (value == BOMB) ? 0 : 1;
 }
-
-std::ostream &operator<<(std::ostream &os, const Tile &obj)
-{
-	os << "(" << obj.value << ", " << obj.marked << ", " << obj.clicked << ")";
-	return os;
-}

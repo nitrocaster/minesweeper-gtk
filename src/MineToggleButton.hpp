@@ -3,9 +3,8 @@
 
 #include "gtkmm/togglebutton.h"
 #include "gtkmm.h"
-#include "MinesweeperGame.hpp"
-
 #include <vector>
+#include "MinesweeperGame.hpp"
 
 class MineToggleButton : public Gtk::ToggleButton
 {
@@ -30,6 +29,3 @@ class MineToggleButton : public Gtk::ToggleButton
 };
 
 #endif
-
-
-

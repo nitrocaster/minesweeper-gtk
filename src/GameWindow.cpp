@@ -1,14 +1,8 @@
-#include "GameWindow.hpp"
 #include <iostream>
 #include <string>
 #include <sstream>
-
+#include "GameWindow.hpp"
 #include "MineToggleButton.hpp"
-
-using std::cout;
-using std::endl;
-using std::string;
-using std::ostringstream;
 
 GameWindow::GameWindow(int d)
 {
@@ -62,14 +56,6 @@ GameWindow::~GameWindow()
   }
 }
 
-
 void GameWindow::on_button_clicked()
 {
 }
-
-
-
-
-
-
-

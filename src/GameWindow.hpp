@@ -4,11 +4,11 @@
 #include <gtkmm/button.h>
 #include <gtkmm/window.h>
 #include <gtkmm.h>
+#include <vector>
 
 #include "Tile.hpp"
 #include "MinesweeperGame.hpp"
 #include "MineToggleButton.hpp"
-#include <vector>
 
 typedef Gtk::Button Button;
 typedef Gtk::ToggleButton ToggleButton;
@@ -27,13 +27,9 @@ protected:
   std::vector<MineToggleButton*> b_tiles;
   //Signal handlers:
   void on_button_clicked();
-  
   //Member widgets:
   Gtk::Table grid;
   Gtk::Table container;
-  
 };
 
-#endif 
-
-
+#endif

@@ -1,17 +1,16 @@
 #ifndef MINESWEEPER_H
 #define MINESWEEPER_H
 
-#include "Tile.hpp"
-
 #include <vector>
 #include <unordered_set>
 #include <queue>
+#include "Tile.hpp"
 
 typedef struct
 {
 	Tile* t;
 	int loc;
-}tile_loc;
+} tile_loc;
 
 enum DIFFICULTY
 {
@@ -50,7 +49,7 @@ public:
 	std::vector<Tile*> getBoard();
 	
 	MinesweeperGame();
-        MinesweeperGame(int w, int h, int m);
+    MinesweeperGame(int w, int h, int m);
 	static MinesweeperGame init(int diff);
 	static void swap(std::vector<int>& a, int i, int j);
 	void printTrueBoard();
@@ -60,6 +59,5 @@ public:
 	void mark(int r, int c);
 
 };
-
 
 #endif

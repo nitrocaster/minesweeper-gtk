@@ -1,12 +1,10 @@
-#include "MinesweeperGame.hpp"
 #include <random>
 #include <iostream>
 #include <algorithm>
 #include <array>
 #include <string>
-
-// linux
-#include <cstdarg>
+#include <cstdarg> // linux
+#include "MinesweeperGame.hpp"
 
 int DEBUG = false;
 
@@ -14,8 +12,8 @@ MinesweeperGame::MinesweeperGame()
 {}
 
 MinesweeperGame::MinesweeperGame(int w, int h, int m) :
-width(w), height(h), num_mines(m), board(w*h), time_remaining(0), live(true),
-num_open(w*h-m), corners(), left_row(), right_row(), top_row(), bottom_row()
+    width(w), height(h), num_mines(m), board(w*h), time_remaining(0), live(true),
+    num_open(w*h-m), corners(), left_row(), right_row(), top_row(), bottom_row()
 {
 	for(int i = 0 ; i < w*h; i++)
 		board.at(i) = new Tile();
@@ -65,96 +63,6 @@ std::vector<Tile*> MinesweeperGame::getBoard()
 {
 	return board;
 }
-
-void MinesweeperGame::printTrueBoard()
-{
-	std::cout << "   ";
-	for(int i = 0 ; i < width ; i++)
-		std::cout << (i/10);
-	std::cout << std::endl;
-	std::cout << "   ";
-	for(int i = 0; i < width; i++)
-		std::cout << (i%10);
-	std::cout << std::endl;
-
-	std::cout << "  " ;
-	for(int i = 0 ; i < width+2; i++)
-		std::cout << "#" ;
-	std::cout << std::endl;
-	for(int i = 0; i < height; i++)
-	{
-		if(i < 10)
-			std::cout << "0";
-		std::cout << i ;
-		std::cout << "#";
-		for(int j = 0 ; j < width; j++)
-		{
-			int v = board.at(width*i+j)->getValue();
-			if(v == BOMB)
-				std::cout << "B";
-			else if(v == 0)
-				std::cout << " ";
-			else
-				std::cout << v;
-		}
-		std::cout << "#" << std::endl;
-	}
-	std::cout << "  ";
-	for(int i = 0 ; i < width+2; i++)
-		std::cout << "#" ;
-	std::cout << std::endl;
-}
-
-void MinesweeperGame::printGameBoard()
-{
-	std::cout << "   ";
-	for(int i = 0 ; i < width ; i++)
-		std::cout << (i/10);
-	std::cout << std::endl;
-	std::cout << "   ";
-	for(int i = 0; i < width; i++)
-		std::cout << (i%10);
-	std::cout << std::endl;
-
-	std::cout << "  " ;
-	for(int i = 0 ; i < width+2; i++)
-		std::cout << "#" ;
-	std::cout << std::endl;
-	for(int i = 0; i < height; i++)
-	{
-		if(i < 10)
-			std::cout << "0";
-		std::cout << i ;
-		std::cout << "#";
-		for(int j = 0 ; j < width; j++)
-		{
-			if(!board.at(width*i+j)->isClicked())
-			{
-				if(board.at(width*i+j)->isMarked())
-					std::cout << "@";
-				else
-					std::cout << "_";	
-			}
-			else
-			{
-				int temp = board.at(width*i+j)->getValue();
-				if(temp == 0)
-					std::cout << " ";
-				else if(temp == BOMB)
-					std::cout << "B";
-				else
-					std::cout << temp;
-			}
-				
-		}
-		std::cout << "#" << std::endl;
-	}
-	std::cout << "  ";
-	for(int i = 0 ; i < width+2; i++)
-		std::cout << "#" ;
-	std::cout << std::endl;
-}
-
 
 int MinesweeperGame::countBombs(MinesweeperGame& game, int num, ...)
 {
@@ -258,7 +166,6 @@ void MinesweeperGame::addAdjacent(std::queue<tile_loc>& q, int num, ...)
 		tile_loc temp_tl = {board.at(loc), loc};
 		q.push(temp_tl);
 	}
-		
 	va_end(arguments);
 }
 
@@ -329,8 +236,3 @@ int MinesweeperGame::click(int r, int c)
 	}
 	return 1;
 }
-
-
-
-
-
