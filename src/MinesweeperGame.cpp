@@ -2,226 +2,298 @@
 #include <algorithm>
 #include <array>
 #include <string>
-#include <cstdarg> // linux
+#include <cstdarg>
 #include "MinesweeperGame.hpp"
 
 MinesweeperGame::MinesweeperGame()
-{}
-
-MinesweeperGame::MinesweeperGame(int w, int h, int m) :
-    width(w), height(h), num_mines(m), board(w*h), time_remaining(0), live(true),
-    num_open(w*h-m), corners(), left_row(), right_row(), top_row(), bottom_row()
 {
-	for(int i = 0 ; i < w*h; i++)
-		board.at(i) = new Tile();
-	corners.emplace(0);
-	corners.emplace(w*h-1);
-	corners.emplace(w-1);
-	corners.emplace(w*h-w);
-	for(int i = 1; i < w-1; i++)
-		top_row.emplace(i);
-	for(int i = w; i < w*h-w; i += w)
-		left_row.emplace(i);
-	for(int i = w*2 - 1; i < w*h-1; i+= w)
-		right_row.emplace(i);
-	for(int i = w*h-w+1; i < w*h-1; i++)
-		bottom_row.emplace(i);
 }
 
-int MinesweeperGame::getHeight()
+MinesweeperGame::MinesweeperGame(int w, int h, int m)
 {
-	return height;
-}
-int MinesweeperGame::getWidth()
-{
-	return width;
-}
-int MinesweeperGame::getNumMines()
-{
-	return num_mines;
-}
-bool MinesweeperGame::isLive()
-{
-	return live;
-}
-int MinesweeperGame::getNumOpen()
-{
-	return num_open;
+    width = w;
+    height = h;
+    mined_tiles = m;
+    time_remaining = 0;
+    game_over = false;
+    unsafe_tiles = w*h-m;
+    board.resize(w*h);
+    for (int i = 0; i < w*h; i++)
+    {
+        board[i] = new Tile();
+    }
+    corners.emplace(0);
+    corners.emplace(w*h-1);
+    corners.emplace(w-1);
+    corners.emplace(w*h-w);
+    for (int i = 1; i < w-1; i++)
+    {
+        top_row.emplace(i);
+    }
+    for (int i = w; i < w*h-w; i += w)
+    {
+        left_row.emplace(i);
+    }
+    for (int i = w*2-1; i < w*h-1; i += w)
+    {
+        right_row.emplace(i);
+    }
+    for (int i = w*h-w+1; i < w*h-1; i++)
+    {
+        bottom_row.emplace(i);
+    }
 }
 
-void MinesweeperGame::swap(std::vector<int>& a, int i, int j)
+int MinesweeperGame::get_height()
 {
-	int temp = a.at(i);
-	a.at(i) = a.at(j);
-	a.at(j) = temp;
+    return height;
 }
 
-std::vector<Tile*> MinesweeperGame::getBoard()
+int MinesweeperGame::get_width()
 {
-	return board;
+    return width;
 }
 
-int MinesweeperGame::countBombs(MinesweeperGame& game, int num, ...)
+int MinesweeperGame::get_mined_tile_count()
 {
-	std::vector<int> t(num);
-	va_list arguments; 
-	va_start(arguments, num);
-	for(int i = 0 ; i < num; i++)
-		t.at(i) = game.getBoard().at(va_arg(arguments, int))->getValue();
+    return mined_tiles;
+}
+
+bool MinesweeperGame::is_over()
+{
+    return game_over;
+}
+
+int MinesweeperGame::get_unsafe_tile_count()
+{
+    return unsafe_tiles;
+}
+
+std::vector<Tile*> MinesweeperGame::get_board()
+{
+    return board;
+}
+
+int MinesweeperGame::get_mine_count(MinesweeperGame& game, int num, ...)
+{
+    std::vector<int> t(num);
+    va_list arguments;
+    va_start(arguments, num);
+    for (int i = 0; i < num; i++)
+    {
+        t[i] = game.get_board()[va_arg(arguments, int)]->get_value();
+    }
 	va_end(arguments);
-	return (int)std::count_if(t.begin(), t.end(), [](int tt){return tt == BOMB;});
+    return (int)std::count_if(t.begin(), t.end(), [](int val){ return val < 0; });
 }
 
-MinesweeperGame MinesweeperGame::init(GameDifficulty difficulty)
+MinesweeperGame MinesweeperGame::initialize(GameDifficulty difficulty)
 {
-	int w = 0, h = 0, m = 0;
-	switch(difficulty)
-	{
-		case GameDifficulty::Easy:
-			w = 9; h = 9; m = 10;
-		break;
-		
-		case GameDifficulty::Hard:
-			w = 30; h = 16; m = 99;
-		break;
-
-		default:
-		case GameDifficulty::Normal:
-			w = 16; h = 16; m = 40;
-	}
-	MinesweeperGame game(w,h,m);
-	std::vector<int> positions(w*h);
-	for(int i = 0 ; i < w*h ; i++)
-		positions.at(i) = i;
-	std::random_device rd;
-	std::default_random_engine generator(rd());
-	int last = w*h - 1;
-	for(int i = m; i > 0; i--)
-	{
-		std::uniform_int_distribution<int> distribution(0,last);
-		int r_index = distribution(generator);
-		int r_value = positions.at(r_index);
-		game.getBoard().at(r_value)->setValue(BOMB);
-		swap(positions, r_index, last--);
-	}
-	
-	for(int i = 0 ; i < w*h; i++)
-	{
-		if(game.getBoard().at(i)->getValue() == BOMB)
-			continue;
-		int val = 0;
-		if(game.left_row.find(i) != game.left_row.end())
-			val = countBombs(game, 5, i-w, i-w+1, i+1, i+w, i+w+1);
-		else if(game.right_row.find(i) != game.right_row.end())
-			val = countBombs(game, 5, i-w, i-w-1, i-1, i+w, i+w-1);
-		else if(game.top_row.find(i) != game.top_row.end())
-			val = countBombs(game, 5, i-1, i+1, i+w, i+w-1, i+w+1);
-		else if(game.bottom_row.find(i) != game.bottom_row.end())
-			val = countBombs(game, 5, i-1, i+1, i-w, i-w-1, i-w+1);
-		else if(game.corners.find(i) != game.corners.end())
-		{
-			if(i == 0)
-				val = countBombs(game, 3, i+1, i+w, i+w+1);
-			else if(i == w-1)
-				val = countBombs(game, 3, i-1, i+w-1, i+w);
-			else if(i == w*h-w)
-				val = countBombs(game, 3, i-w, i-w+1, i+1);
-			else
-				val = countBombs(game, 3, i-w, i-w-1, i-1);
-		}
-		else
-			val = countBombs(game, 8, i-w-1, i-w, i-w+1, i-1, i+1, i+w-1, i+w, i+w+1);
-		game.getBoard().at(i)->setValue(val);
-	}
-	return game;
-
+    int w = 0, h = 0, m = 0;
+    switch (difficulty)
+    {
+    case GameDifficulty::Easy:
+        w = 9;
+        h = 9;
+        m = 10;
+        break;
+        
+    case GameDifficulty::Hard:
+        w = 30;
+        h = 16;
+        m = 99;
+        break;
+        
+    default:
+    case GameDifficulty::Normal:
+        w = 16;
+        h = 16;
+        m = 40;
+    }
+    MinesweeperGame game(w, h, m);
+    std::vector<int> positions(w*h);
+    for (int i = 0; i < w*h; i++)
+    {
+        positions[i] = i;
+    }
+    std::random_device rd;
+    std::default_random_engine generator(rd());
+    int last = w*h-1;
+    for (int i = m; i > 0; i--)
+    {
+        std::uniform_int_distribution<int> distribution(0, last);
+        int r_index = distribution(generator);
+        int r_value = positions[r_index];
+        game.get_board()[r_value]->set_value(-1);
+        std::swap(positions[r_index], positions[last--]);
+    }
+    for (int i = 0; i < w*h; i++)
+    {
+        if (game.get_board()[i]->get_value() < 0)
+        {
+            continue;
+        }
+        int val = 0;
+        if (game.left_row.find(i) != game.left_row.end())
+        {
+            val = get_mine_count(game, 5, i-w, i-w+1, i+1, i+w, i+w+1);
+        }
+        else if (game.right_row.find(i) != game.right_row.end())
+        {
+            val = get_mine_count(game, 5, i-w, i-w-1, i-1, i+w, i+w-1);
+        }
+        else if (game.top_row.find(i) != game.top_row.end())
+        {
+            val = get_mine_count(game, 5, i-1, i+1, i+w, i+w-1, i+w+1);
+        }
+        else if (game.bottom_row.find(i) != game.bottom_row.end())
+        {
+            val = get_mine_count(game, 5, i-1, i+1, i-w, i-w-1, i-w+1);
+        }
+        else if (game.corners.find(i) != game.corners.end())
+        {
+            if (i == 0)
+            {
+                val = get_mine_count(game, 3, i+1, i+w, i+w+1);
+            }
+            else if (i == w-1)
+            {
+                val = get_mine_count(game, 3, i-1, i+w-1, i+w);
+            }
+            else if (i == w*h-w)
+            {
+                val = get_mine_count(game, 3, i-w, i-w+1, i+1);
+            }
+            else
+            {
+                val = get_mine_count(game, 3, i-w, i-w-1, i-1);
+            }
+        }
+        else
+        {
+            val = get_mine_count(game, 8, i-w-1, i-w, i-w+1, i-1, i+1, i+w-1, i+w, i+w+1);
+        }
+        game.get_board()[i]->set_value(val);
+    }
+    return game;
 }
 
 void MinesweeperGame::exit()
 {
-	for(int i = 0; i < width*height; i++)
-		delete board.at(i);
+    for (int i = 0; i < width*height; i++)
+    {
+        delete board[i];
+    }
 }
 
-void MinesweeperGame::addAdjacent(std::queue<tile_loc>& q, int num, ...)
+void MinesweeperGame::add_adjacent(std::queue<IndexedTile>& q, int num, ...)
 {
-	va_list arguments; 
-	va_start(arguments, num);
-	for(int i = 0 ; i < num; i++)
-	{
-		int loc = va_arg(arguments, int);
-		if(board.at(loc)->isClicked())
-			continue;
-		tile_loc temp_tl = {board.at(loc), loc};
-		q.push(temp_tl);
-	}
-	va_end(arguments);
+    va_list arguments;
+    va_start(arguments, num);
+    for (int i = 0; i < num; i++)
+    {
+        int index = va_arg(arguments, int);
+        if (board[index]->is_swept())
+        {
+            continue;
+        }
+        q.push({board[index], index});
+    }
+    va_end(arguments);
 }
 
-void MinesweeperGame::mark(int r, int c)
+void MinesweeperGame::mark_tile(int r, int c)
 {
-	if(r < 0 || c < 0 || r >= height || c >= width)
-		return;
-	if(board.at(width*r+c)->isClicked())
-		return;
-	board.at(width*r+c)->mark();	
+    if (r < 0 || c < 0 || r >= height || c >= width)
+    {
+        return;
+    }
+    if (board[width*r+c]->is_swept())
+    {
+        return;
+    }
+    board[width*r+c]->mark();
 }
 
-int MinesweeperGame::click(int r, int c)
+bool MinesweeperGame::click(int r, int c)
 {
-	if(r < 0 || c < 0 || r >= height || c >= width)
-		return 0;
-	if(board.at(width*r+c)->getValue() == 0)
-	{
-		std::queue<tile_loc> q;
-		tile_loc tl = {board.at(width*r+c), width*r+c};
-		q.push(tl);
-		while(!q.empty())
-		{
-			tile_loc temp_tl = q.front();
-			q.pop();
-			Tile* temp_t = temp_tl.t;
-			if(!temp_t->isClicked())
-			{
-				temp_t->click();
-				num_open--;	
-			}
-			if(num_open == 0)
-				live = false;
-			if(temp_t->getValue() != 0)
-				continue;
-			int i = temp_tl.loc;
-			int w = width;
-			int h = height;
-			if(left_row.find(i) != left_row.end())
-				addAdjacent(q, 5, i-w, i-w+1, i+1, i+w, i+w+1);
-			else if(right_row.find(i) != right_row.end())
-				addAdjacent(q, 5, i-w, i-w-1, i-1, i+w, i+w-1);
-			else if(top_row.find(i) != top_row.end())
-				addAdjacent(q, 5, i-1, i+1, i+w, i+w-1, i+w+1);
-			else if(bottom_row.find(i) != bottom_row.end())
-				addAdjacent(q, 5, i-1, i+1, i-w, i-w-1, i-w+1);
-			else if(corners.find(i) != corners.end())
-			{
-				if(i == 0)
-					addAdjacent(q, 3, i+1, i+w, i+w+1);
-				else if(i == w-1)
-					addAdjacent(q, 3, i-1, i+w-1, i+w);
-				else if(i == w*h-w)
-					addAdjacent(q, 3, i-w, i-w+1, i+1);
-				else
-					addAdjacent(q, 3, i-w, i-w-1, i-1);
-			}
-			else
-				addAdjacent(q, 8, i-w-1, i-w, i-w+1, i-1, i+1, i+w-1, i+w, i+w+1);
-		}
-	}
-	else
-	{
-		int safe = board.at(width*r+c)->click();
-		num_open--;
-		if(!safe || num_open == 0)
-			live = false;		
-	}
-	return 1;
+    if (r < 0 || c < 0 || r >= height || c >= width)
+    {
+        return false;
+    }
+    if (board[width*r+c]->get_value() == 0)
+    {
+        std::queue<IndexedTile> tile_queue;
+        tile_queue.push({board[width*r+c], width*r+c});
+        while (!tile_queue.empty())
+        {
+            IndexedTile itile = tile_queue.front();
+            tile_queue.pop();
+            Tile *temp_t = itile.tile;
+            if (!temp_t->is_swept())
+            {
+                temp_t->sweep();
+                unsafe_tiles--;
+            }
+            if (unsafe_tiles == 0)
+            {
+                game_over = true;
+            }
+            if (temp_t->get_value() != 0)
+            {
+                continue;
+            }
+            int i = itile.index;
+            int w = width, h = height;
+            if (left_row.find(i) != left_row.end())
+            {
+                add_adjacent(tile_queue, 5, i-w, i-w+1, i+1, i+w, i+w+1);
+            }
+            else if (right_row.find(i) != right_row.end())
+            {
+                add_adjacent(tile_queue, 5, i-w, i-w-1, i-1, i+w, i+w-1);
+            }
+            else if (top_row.find(i) != top_row.end())
+            {
+                add_adjacent(tile_queue, 5, i-1, i+1, i+w, i+w-1, i+w+1);
+            }
+            else if (bottom_row.find(i) != bottom_row.end())
+            {
+                add_adjacent(tile_queue, 5, i-1, i+1, i-w, i-w-1, i-w+1);
+            }
+            else if (corners.find(i) != corners.end())
+            {
+                if (i == 0)
+                {
+                    add_adjacent(tile_queue, 3, i+1, i+w, i+w+1);
+                }
+                else if (i == w-1)
+                {
+                    add_adjacent(tile_queue, 3, i-1, i+w-1, i+w);
+                }
+                else if (i == w*h-w)
+                {
+                    add_adjacent(tile_queue, 3, i-w, i-w+1, i+1);
+                }
+                else
+                {
+                    add_adjacent(tile_queue, 3, i-w, i-w-1, i-1);
+                }
+            }
+            else
+            {
+                add_adjacent(tile_queue, 8, i-w-1, i-w, i-w+1, i-1, i+1, i+w-1, i+w, i+w+1);
+            }
+        }
+    }
+    else
+    {
+        int safe = board[width*r+c]->sweep();
+        unsafe_tiles--;
+        if (!safe || unsafe_tiles == 0)
+        {
+            game_over = true;
+        }
+    }
+    return true;
 }

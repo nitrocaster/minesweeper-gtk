@@ -7,73 +7,76 @@ bool MineToggleButton::on_button_press_event(GdkEventButton *event)
 
 bool MineToggleButton::on_button_release_event(GdkEventButton *event)
 {
-  if(this->get_active())
-    return true;
-  if(event->button == 3)
-  {
-    delete this->get_image();
-    Gtk::Image* temp = clickFlag ? new Gtk::Image("res/0.png") : new Gtk::Image("res/flag.png");
-    this->set_image(*temp);
-    temp->show();
-    clickFlag = ~clickFlag;
-    return true;
-  }
-  if(event->button == 1 && clickFlag)
-    return true;
-  this->set_active(1);
-  delete this->get_image();
-  clickFlag = game->click(row,col);
-  int i = row;
-  int j = col;
-  int w = game->getWidth();
-  int h = game->getHeight();
-  int v = game->getBoard().at(w*i+j)->getValue();
-  Gtk::Image* temp;
-  if(v == BOMB)
-    temp = new Gtk::Image("res/mine.png");
-  else
-  {
-    std::string image_path;
-    std::ostringstream convert;
-    convert << v;
-  image_path = "res/" + convert.str() + ".png";
-    temp = new Gtk::Image(image_path);
-  }
-  this->set_image(*temp);
-  (temp)->show();
-  for(int i = 0; i < h; i++)
-  {
-    for(int j = 0; j < w; j++)
+    if (get_active())
     {
-      int loc = w*i+j;
-      if(game->getBoard().at(loc)->isClicked())
-      {
-        if(!tiles->at(loc)->get_active())
-        {
-          tiles->at(loc)->set_active(1);
-          delete tiles->at(loc)->get_image();
-          v = game->getBoard().at(loc)->getValue();
-          if(v == BOMB)
-            temp = new Gtk::Image("res/mine.png");
-          else
-          {
-            std::string image_path;
-            std::ostringstream convert;
-            convert << v;
-            image_path = "res/" + convert.str() + ".png";
-            temp = new Gtk::Image(image_path);
-          }
-          tiles->at(loc)->set_image(*temp);
-          (temp)->show();
-        }
-      }
+        return true;
     }
-  }
-  if(!game->isLive())
-  {
-    std::string msg = game->getNumOpen() ? "You lose =(" : "You win!";
-    Gtk::MessageDialog dialog(msg, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
-    dialog.run();
-    Gtk::Main::quit();
-  }
+    if (event->button == 3)
+    {
+        delete get_image();
+        auto img = new Gtk::Image(marked ? "res/0.png" : "res/flag.png");
+        set_image(*img);
+        img->show();
+        marked = !marked;
+        return true;
+    }
+    if (event->button == 1 && marked)
+    {
+        return true;
+    }
+    set_active(true);
+    delete get_image();
+    marked = game->click(row, column);
+    int w = game->get_width(), h = game->get_height();
+    int val = game->get_board().at(w*row+column)->get_value();
+    std::string img_path;
+    if (val < 0)
+    {
+        img_path = "res/mine_e.png";
+    }
+    else
+    {
+        std::ostringstream convert;
+        convert << val;
+        img_path = "res/" + convert.str() + ".png";
+    }
+    auto img = new Gtk::Image(img_path);
+    set_image(*img);
+    img->show();
+    for (int i = 0; i < h; i++)
+    {
+        for (int j = 0; j < w; j++)
+        {
+            int loc = w * i + j;
+            if (game->get_board().at(loc)->is_swept())
+            {
+                if (!tiles->at(loc)->get_active())
+                {
+                    tiles->at(loc)->set_active(true);
+                    delete tiles->at(loc)->get_image();
+                    val = game->get_board().at(loc)->get_value();
+                    if (val < 0)
+                    {
+                        img_path = "res/mine_e.png";
+                    }
+                    else
+                    {
+                        std::ostringstream convert;
+                        convert << val;
+                        img_path = "res/" + convert.str() + ".png";
+                    }
+                    img = new Gtk::Image(img_path);
+                    tiles->at(loc)->set_image(*img);
+                    img->show();
+                }
+            }
+        }
+    }
+    if (game->is_over())
+    {
+        std::string msg = game->get_unsafe_tile_count() == 0 ? "You win!" : "You lose =(";
+        Gtk::MessageDialog dialog(msg, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
+        dialog.run();
+        Gtk::Main::quit();
+    }
 }

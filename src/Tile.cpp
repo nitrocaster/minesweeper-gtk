@@ -1,30 +1,28 @@
 #include "Tile.hpp"
 
 Tile::Tile(int val) :
-value(val), marked(false), clicked(false)
+    value(val), marked(false), swept(false)
 {
-
 }
 
 Tile::Tile() :
-value(0), marked(false), clicked(false)
+    value(0), marked(false), swept(false)
 {
-
 }
 
-int Tile::getValue()
+int Tile::get_value()
 {
 	return value;
 }
 
-bool Tile::isMarked()
+bool Tile::is_marked()
 {
 	return marked;
 }
 
-bool Tile::isClicked()
+bool Tile::is_swept()
 {
-	return clicked;
+	return swept;
 }
 
 void Tile::mark()
@@ -32,13 +30,13 @@ void Tile::mark()
 	marked = !marked;
 }
 
-void Tile::setValue(int v)
+void Tile::set_value(int value)
 {
-	value = v;
+	this->value = value;
 }
 
-int Tile::click()
+bool Tile::sweep()
 {
-	clicked = true;
-	return (value == BOMB) ? 0 : 1;
+	swept = true;
+	return value >= 0;
 }

@@ -1,10 +1,10 @@
-#include "GameWindow.hpp"
 #include <gtkmm/main.h>
+#include "GameWindow.hpp"
 
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-  Gtk::Main kit(argc, argv);
-  GameWindow mgui (GameDifficulty::Easy);
-  Gtk::Main::run(mgui);
-  return 0;
+    Gtk::Main kit(argc, argv);
+    GameWindow window(GameDifficulty::Easy);
+    Gtk::Main::run(window);
+    return 0;
 }

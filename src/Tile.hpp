@@ -1,25 +1,23 @@
-#ifndef TILE_H
-#define TILE_H
-
-#define BOMB -1
+#ifndef TILE_HPP
+#define TILE_HPP
 
 class Tile
 {
 private:
 	int value;
 	bool marked;
-	bool clicked;
+	bool swept;
 
 public:
-	Tile(int val);
+	Tile(int value);
 	Tile();
 
-	int getValue();
-	bool isMarked();
-	bool isClicked();
-	void setValue(int v);
+	int get_value();
+	bool is_marked();
+	bool is_swept();
+	void set_value(int value);
 	void mark();
-	int click();
+	bool sweep();
 };
 
 #endif
