@@ -18,7 +18,6 @@ GameWindow::GameWindow(GameDifficulty difficulty)
       temp->setCol(j);
       temp->setGame(&game);
       temp->setTiles(&b_tiles);
-      temp->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::on_button_clicked));
       b_tiles.push_back(temp);
     }
   }
