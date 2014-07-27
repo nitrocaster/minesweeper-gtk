@@ -83,21 +83,21 @@ void print_set(std::string s, std::unordered_set<int> set)
 	std::cout << std::endl;
 }
 
-MinesweeperGame MinesweeperGame::init(int diff)
+MinesweeperGame MinesweeperGame::init(GameDifficulty difficulty)
 {
 	int w = 0, h = 0, m = 0;
-	switch(diff)
+	switch(difficulty)
 	{
-		case EASY:
+		case GameDifficulty::Easy:
 			w = 9; h = 9; m = 10;
 		break;
 		
-		case HARD:
+		case GameDifficulty::Hard:
 			w = 30; h = 16; m = 99;
 		break;
 
 		default:
-		case NORMAL:
+		case GameDifficulty::Normal:
 			w = 16; h = 16; m = 40;
 	}
 	MinesweeperGame game(w,h,m);

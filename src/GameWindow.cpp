@@ -4,9 +4,9 @@
 #include "GameWindow.hpp"
 #include "MineToggleButton.hpp"
 
-GameWindow::GameWindow(int d)
+GameWindow::GameWindow(GameDifficulty difficulty)
 {
-  game = MinesweeperGame::init(d);
+  game = MinesweeperGame::init(difficulty);
   int w = game.getWidth();
   int h = game.getHeight();
   int a = w*h;

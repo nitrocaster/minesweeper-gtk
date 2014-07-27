@@ -17,7 +17,7 @@ class GameWindow : public Gtk::Window
 {
 
 public:
-  GameWindow(int);
+  GameWindow(GameDifficulty difficulty);
   virtual ~GameWindow();
 
 protected:

@@ -12,11 +12,12 @@ typedef struct
 	int loc;
 } tile_loc;
 
-enum DIFFICULTY
+enum struct GameDifficulty
 {
-	EASY = 1, 
-	NORMAL = 2,
-	HARD = 3
+    Easy    = 1,
+    Normal  = 2,
+    Hard    = 3,
+    Custom  = 0
 };
 
 class MinesweeperGame
@@ -50,7 +51,7 @@ public:
 	
 	MinesweeperGame();
     MinesweeperGame(int w, int h, int m);
-	static MinesweeperGame init(int diff);
+	static MinesweeperGame init(GameDifficulty difficulty);
 	static void swap(std::vector<int>& a, int i, int j);
 	void printTrueBoard();
 	void printGameBoard();

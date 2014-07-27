@@ -5,7 +5,7 @@
 int main (int argc, char *argv[])
 {
   Gtk::Main kit(argc, argv);
-  GameWindow mgui (1);
+  GameWindow mgui (GameDifficulty::Easy);
   Gtk::Main::run(mgui);
   return 0;
 }
