@@ -53,8 +53,6 @@ public:
     MinesweeperGame(int w, int h, int m);
 	static MinesweeperGame init(GameDifficulty difficulty);
 	static void swap(std::vector<int>& a, int i, int j);
-	void printTrueBoard();
-	void printGameBoard();
 	void exit();
 	int click(int r, int c);
 	void mark(int r, int c);

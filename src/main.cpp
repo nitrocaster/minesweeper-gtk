@@ -1,5 +1,4 @@
 #include "GameWindow.hpp"
-#include <iostream>
 #include <gtkmm/main.h>
 
 int main (int argc, char *argv[])

@@ -1,12 +1,9 @@
 #include <random>
-#include <iostream>
 #include <algorithm>
 #include <array>
 #include <string>
 #include <cstdarg> // linux
 #include "MinesweeperGame.hpp"
-
-int DEBUG = false;
 
 MinesweeperGame::MinesweeperGame()
 {}
@@ -73,14 +70,6 @@ int MinesweeperGame::countBombs(MinesweeperGame& game, int num, ...)
 		t.at(i) = game.getBoard().at(va_arg(arguments, int))->getValue();
 	va_end(arguments);
 	return (int)std::count_if(t.begin(), t.end(), [](int tt){return tt == BOMB;});
-}
-
-void print_set(std::string s, std::unordered_set<int> set)
-{
-	std::cout << s << ": " ;
-	for(std::unordered_set<int>::iterator iter = set.begin(); iter != set.end(); iter++)
-		std::cout << (*iter) << " ";
-	std::cout << std::endl;
 }
 
 MinesweeperGame MinesweeperGame::init(GameDifficulty difficulty)

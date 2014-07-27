@@ -25,8 +25,6 @@ protected:
   int height;
   MinesweeperGame game;
   std::vector<MineToggleButton*> b_tiles;
-  //Signal handlers:
-  void on_button_clicked();
   //Member widgets:
   Gtk::Table grid;
   Gtk::Table container;

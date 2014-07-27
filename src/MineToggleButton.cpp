@@ -1,6 +1,4 @@
-#include <iostream>
 #include <string>
-#include <sstream>
 #include "MineToggleButton.hpp"
 
 bool MineToggleButton::on_button_press_event(GdkEventButton *event)

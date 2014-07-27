@@ -1,6 +1,4 @@
-#include <iostream>
 #include <string>
-#include <sstream>
 #include "GameWindow.hpp"
 #include "MineToggleButton.hpp"
 
@@ -54,8 +52,4 @@ GameWindow::~GameWindow()
     delete b_tiles.at(i)->get_image();
     delete b_tiles.at(i);
   }
-}
-
-void GameWindow::on_button_clicked()
-{
 }
