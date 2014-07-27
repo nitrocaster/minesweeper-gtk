@@ -50,7 +50,7 @@ MineGui::MineGui(int d)
   add(container);
   container.show();
   grid.show();
-  set_title("Minesweeper by mlfong");
+  set_title("Minesweeper");
 }
 
 MineGui::~MineGui()
