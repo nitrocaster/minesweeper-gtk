@@ -1,6 +1,6 @@
 # Makefile
 
-SRCDIR  := source
+SRCDIR  := src
 
 SOURCES := $(shell find $(SRCDIR) -name "*.cc")
 OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
