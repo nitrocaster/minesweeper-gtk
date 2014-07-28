@@ -11,47 +11,42 @@ MinesweeperGame::MinesweeperGame()
 
 MinesweeperGame::MinesweeperGame(int w, int h, int m)
 {
-    width = w;
-    height = h;
     mined_tiles = m;
     time_remaining = 0;
     game_over = false;
-    unsafe_tiles = w*h-m;
-    board.resize(w*h);
-    for (int i = 0; i < w*h; i++)
+    size = Size(w, h);
+    int a = size.area();
+    unsafe_tiles = a-m;
+    board.resize(a);
+    for (int i = 0; i < a; i++)
     {
         board[i] = new Tile();
     }
     corners.emplace(0);
-    corners.emplace(w*h-1);
+    corners.emplace(a-1);
     corners.emplace(w-1);
-    corners.emplace(w*h-w);
+    corners.emplace(a-w);
     for (int i = 1; i < w-1; i++)
     {
         top_row.emplace(i);
     }
-    for (int i = w; i < w*h-w; i += w)
+    for (int i = w; i < a-w; i += w)
     {
         left_row.emplace(i);
     }
-    for (int i = w*2-1; i < w*h-1; i += w)
+    for (int i = w*2-1; i < a-1; i += w)
     {
         right_row.emplace(i);
     }
-    for (int i = w*h-w+1; i < w*h-1; i++)
+    for (int i = a-w+1; i < a-1; i++)
     {
         bottom_row.emplace(i);
     }
 }
 
-int MinesweeperGame::get_height()
+Size MinesweeperGame::get_size() const
 {
-    return height;
-}
-
-int MinesweeperGame::get_width()
-{
-    return width;
+    return size;
 }
 
 int MinesweeperGame::get_mined_tile_count()
@@ -180,7 +175,7 @@ MinesweeperGame MinesweeperGame::initialize(GameDifficulty difficulty)
 
 void MinesweeperGame::exit()
 {
-    for (int i = 0; i < width*height; i++)
+    for (int i = 0; i < size.area(); i++)
     {
         delete board[i];
     }
@@ -202,29 +197,31 @@ void MinesweeperGame::add_adjacent(std::queue<IndexedTile>& q, int num, ...)
     va_end(arguments);
 }
 
-void MinesweeperGame::mark_tile(int r, int c)
+void MinesweeperGame::mark_tile(int row, int column)
 {
-    if (r < 0 || c < 0 || r >= height || c >= width)
+    int w = size.width, h = size.height;
+    if (row < 0 || column < 0 || row >= h || column >= w)
     {
         return;
     }
-    if (board[width*r+c]->is_swept())
+    if (board[size.width*row+column]->is_swept())
     {
         return;
     }
-    board[width*r+c]->mark();
+    board[size.width*row+column]->mark();
 }
 
-bool MinesweeperGame::click(int r, int c)
+bool MinesweeperGame::click(int row, int column)
 {
-    if (r < 0 || c < 0 || r >= height || c >= width)
+    int w = size.width, h = size.height;
+    if (row < 0 || column < 0 || row >= h || column >= w)
     {
         return false;
     }
-    if (board[width*r+c]->get_value() == 0)
+    if (board[w*row+column]->get_value() == 0)
     {
         std::queue<IndexedTile> tile_queue;
-        tile_queue.push({board[width*r+c], width*r+c});
+        tile_queue.push({board[w*row+column], w*row+column});
         while (!tile_queue.empty())
         {
             IndexedTile itile = tile_queue.front();
@@ -244,7 +241,6 @@ bool MinesweeperGame::click(int r, int c)
                 continue;
             }
             int i = itile.index;
-            int w = width, h = height;
             if (left_row.find(i) != left_row.end())
             {
                 add_adjacent(tile_queue, 5, i-w, i-w+1, i+1, i+w, i+w+1);
@@ -288,7 +284,7 @@ bool MinesweeperGame::click(int r, int c)
     }
     else
     {
-        int safe = board[width*r+c]->sweep();
+        int safe = board[w*row+column]->sweep();
         unsafe_tiles--;
         if (!safe || unsafe_tiles == 0)
         {

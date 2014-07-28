@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_set>
 #include <queue>
+#include "Common.hpp"
 #include "Tile.hpp"
 
 enum struct GameDifficulty
@@ -24,8 +25,7 @@ private:
         int index;
     };
 
-	int width;
-	int height;
+	Size size;
 	int mined_tiles;
 	int unsafe_tiles;
 	std::vector<Tile*> board;
@@ -46,15 +46,14 @@ public:
     MinesweeperGame(int w, int h, int m);
     static MinesweeperGame initialize(GameDifficulty difficulty);
 
-	int get_height();
-	int get_width();
+    Size get_size() const;
 	int get_mined_tile_count();
 	int get_unsafe_tile_count();
 	bool is_over();
 	std::vector<Tile*> get_board();
 	void exit();
-	bool click(int r, int c);
-	void mark_tile(int r, int c);
+	bool click(int row, int column);
+	void mark_tile(int row, int column);
 };
 
 #endif

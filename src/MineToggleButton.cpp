@@ -30,8 +30,8 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
     set_active(true);
     delete get_image();
     marked = game->click(row, column);
-    int w = game->get_width(), h = game->get_height();
-    int val = game->get_board()[w*row+column]->get_value();
+    Size sz = game->get_size();
+    int val = game->get_board()[sz.width*row+column]->get_value();
     std::string img_path;
     if (val < 0)
     {
@@ -47,11 +47,11 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
     set_image(*img);
     img->show();
     // update all the rest of tiles
-    for (int i = 0; i < h; i++)
+    for (int i = 0; i < sz.height; i++)
     {
-        for (int j = 0; j < w; j++)
+        for (int j = 0; j < sz.width; j++)
         {
-            int loc = w*i+j;
+            int loc = sz.width*i+j;
             Tile *board_tile = game->get_board()[loc];
             if (board_tile->is_swept() && !tiles->at(loc)->get_active())
             {
