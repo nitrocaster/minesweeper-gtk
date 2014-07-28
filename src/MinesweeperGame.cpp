@@ -227,6 +227,7 @@ bool MinesweeperGame::click(int row, int column)
             }
             if (unsafe_tiles == 0)
             {
+                // all safe tiles swept => win
                 game_over = true;
             }
             if (temp_t->get_value() != 0)
@@ -234,6 +235,7 @@ bool MinesweeperGame::click(int row, int column)
                 continue;
             }
             int i = itile.index;
+            // tile position: 9 cases (4 sides + 4 corners + internal)
             if (left_row.find(i) != left_row.end())
             {
                 add_adjacent(tile_queue, {i-w, i-w+1, i+1, i+w, i+w+1});
