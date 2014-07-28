@@ -1,6 +1,16 @@
 #ifndef COMMON_HPP
 #define COMMON_HPP
 
+#ifndef countof
+#define countof(_array) (sizeof(_array) / sizeof((_array)[0]))
+#endif
+
+enum class NoInit
+{
+    Dummy
+};
+
+
 struct Size
 {
     int width, height;

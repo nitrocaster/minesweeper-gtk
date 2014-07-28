@@ -1,5 +1,5 @@
-#ifndef MINESWEEPER_H
-#define MINESWEEPER_H
+#ifndef MINESWEEPER_HPP
+#define MINESWEEPER_HPP
 
 #include <vector>
 #include <unordered_set>
@@ -15,6 +15,8 @@ enum struct GameDifficulty
     Custom  = 0
 };
 
+class GameWindow;
+
 class MinesweeperGame
 {
 private:
@@ -25,34 +27,43 @@ private:
         int index;
     };
 
-	Size size;
-	int mined_tiles;
-	int unsafe_tiles;
-	std::vector<Tile*> board;
-	bool game_over;
+    Size size;
+    std::vector<Tile*> board;
+    int mined_tiles;
+    int unsafe_tiles;
+    bool game_over;
+    bool initialized;
 
-	std::unordered_set<int> corners;
-	std::unordered_set<int> left_row;
-	std::unordered_set<int> right_row;
-	std::unordered_set<int> top_row;
-	std::unordered_set<int> bottom_row;
+    GameDifficulty difficulty = GameDifficulty::Custom;
+    GameWindow *window = nullptr;
 
-	int get_mine_count(std::initializer_list<int> indices);
-	void add_adjacent(std::queue<IndexedTile>& q, std::initializer_list<int> indices);
+    std::unordered_set<int> corners;
+    std::unordered_set<int> left_row;
+    std::unordered_set<int> right_row;
+    std::unordered_set<int> top_row;
+    std::unordered_set<int> bottom_row;
+
+    int get_mine_count(std::initializer_list<int> indices);
+    void add_adjacent(std::queue<IndexedTile> &qu, std::initializer_list<int> indices);
+    void initialize(Size size, int mine_count);
+    void destroy();
 
 public:
-    MinesweeperGame();
-    MinesweeperGame(int w, int h, int m);
-    static MinesweeperGame initialize(GameDifficulty difficulty);
+    MinesweeperGame(NoInit);
+    explicit MinesweeperGame(GameDifficulty difficulty);
+    ~MinesweeperGame();
 
     Size get_size() const;
-	int get_mined_tile_count();
-	int get_unsafe_tile_count();
-	bool is_over();
-	std::vector<Tile*> get_board();
-	void exit();
-	bool click(int row, int column);
-	void mark_tile(int row, int column);
+    std::vector<Tile*> &get_board();
+    int get_mined_tile_count() const;
+    int get_unsafe_tile_count() const;
+    bool is_over() const;
+    GameDifficulty get_game_difficulty() const;
+    GameWindow* get_window();
+    void set_window(GameWindow& window);
+    void initialize(GameDifficulty difficulty);
+    bool sweep_tile(int row, int column);
+    void mark_tile(int row, int column);
 };
 
 #endif

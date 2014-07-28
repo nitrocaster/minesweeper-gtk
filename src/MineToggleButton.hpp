@@ -1,19 +1,18 @@
 #ifndef MINE_TOGGLE_BUTTON_HPP
 #define MINE_TOGGLE_BUTTON_HPP
 
-#include "gtkmm/togglebutton.h"
 #include "gtkmm.h"
+#include "gtkmm/togglebutton.h"
 #include <vector>
 #include "MinesweeperGame.hpp"
 
-class MineToggleButton : public Gtk::ToggleButton
+class MineToggleButton: public Gtk::ToggleButton
 {
 private:
     int row;
     int column;
     MinesweeperGame *game;
     std::vector<MineToggleButton*> *tiles;
-    bool marked = false;
 
 public:
     void set_row(int row)
@@ -46,19 +45,24 @@ public:
         return column;
     }
 
-    bool click()
+    bool is_swept()
     {
-        return marked;
+        return game->get_board()[game->get_size().width*row+column]->is_swept();
     }
-    
+
+    void sweep()
+    {
+        game->get_board()[game->get_size().width*row+column]->sweep();
+    }
+
     MinesweeperGame *get_game()
     {
         return game;
     }
 
     // Gtk::Widget
-    virtual bool on_button_press_event(GdkEventButton *event);
-    virtual bool on_button_release_event(GdkEventButton *event);
+    virtual bool on_button_press_event(GdkEventButton *event) override;
+    virtual bool on_button_release_event(GdkEventButton *event) override;
     // ~Gtk::Widget
 };
 

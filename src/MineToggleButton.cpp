@@ -1,5 +1,6 @@
 #include <string>
 #include "MineToggleButton.hpp"
+#include "GameWindow.hpp"
 
 bool MineToggleButton::on_button_press_event(GdkEventButton *event)
 {
@@ -12,26 +13,28 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
     {
         return true;
     }
+    int i = row, j = column;
+    Size sz = game->get_size();
+    Tile *tile = game->get_board()[sz.width*i+j];
     if (event->button == 3)
     {
         // RMB click => toggle flag
+        tile->set_marked(!tile->is_marked());
         delete get_image();
-        auto img = new Gtk::Image(marked ? "res/0.png" : "res/flag.png");
+        auto img = new Gtk::Image(tile->is_marked() ? "res/flag.png" : "res/0.png");
         set_image(*img);
         img->show();
-        marked = !marked;
         return true;
     }
-    if (event->button == 1 && marked)
+    if (event->button == 1 && tile->is_marked())
     {
         // LMB click on flagged tile => ignore
         return true;
     }
     set_active(true);
     delete get_image();
-    marked = game->click(row, column);
-    Size sz = game->get_size();
-    int val = game->get_board()[sz.width*row+column]->get_value();
+    game->sweep_tile(row, column);
+    int val = tile->get_value();
     std::string img_path;
     if (val < 0)
     {
@@ -87,6 +90,7 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
         std::string msg = game->get_unsafe_tile_count() == 0 ? "You win!" : "You lose.";
         Gtk::MessageDialog dialog(msg, false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_OK);
         dialog.run();
-        Gtk::Main::quit();
+        game->get_window()->reset(game->get_game_difficulty());
     }
+    return true;
 }

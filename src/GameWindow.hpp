@@ -11,18 +11,22 @@
 
 class GameWindow : public Gtk::Window
 {
+private:
+    bool initialized = false;
+    Size size;
+    MinesweeperGame game;
+    std::vector<MineToggleButton*> tiles;
+    Gtk::Table grid;
+    Gtk::Table table;
+
 public:
     GameWindow(GameDifficulty difficulty);
     virtual ~GameWindow();
+    void reset(GameDifficulty difficulty);
 
-protected:
-    int width;
-    int height;
-    MinesweeperGame game;
-    std::vector<MineToggleButton*> tiles;
-
-    Gtk::Table grid;
-    Gtk::Table container;
+private:
+    void initialize(GameDifficulty difficulty);
+    void destroy();
 };
 
 #endif

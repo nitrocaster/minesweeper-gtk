@@ -2,11 +2,37 @@
 #include "GameWindow.hpp"
 #include "MineToggleButton.hpp"
 
-GameWindow::GameWindow(GameDifficulty difficulty)
+GameWindow::GameWindow(GameDifficulty difficulty) :
+    game(NoInit::Dummy)
 {
-    game = MinesweeperGame::initialize(difficulty);
+    initialized = false;
+    initialize(difficulty);
+    set_border_width(25);
+    table.attach(grid, 0, 1, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::SHRINK);
+    add(table);
+    table.show();
+    grid.show();
+    set_title("Minesweeper");
+    property_resizable() = false;
+}
+
+GameWindow::~GameWindow()
+{
+    destroy();
+}
+
+void GameWindow::reset(GameDifficulty difficulty)
+{
+    destroy();
+    initialize(difficulty);
+}
+
+void GameWindow::initialize(GameDifficulty difficulty)
+{
+    game.initialize(difficulty);
+    game.set_window(*this);
     Size sz = game.get_size();
-    int a = sz.area();
+    tiles.reserve(sz.area());
     for (int i = 0; i < sz.height; i++)
     {
         for (int j = 0; j < sz.width; j++)
@@ -31,20 +57,21 @@ GameWindow::GameWindow(GameDifficulty difficulty)
             tiles[sz.width*i+j]->show();
         }
     }
-    set_border_width(25);
-    container.attach(grid, 0, 1, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::SHRINK);
-    add(container);
-    container.show();
-    grid.show();
-    set_title("Minesweeper");
+    initialized = true;
 }
 
-GameWindow::~GameWindow()
+void GameWindow::destroy()
 {
-    int tile_count = game.get_size().area();
-    for (int i = 0; i < tile_count; i++)
+    if (!initialized)
     {
-        delete tiles[i]->get_image();
-        delete tiles[i];
+        return;
     }
+    for (auto tile : tiles)
+    {
+        grid.remove(*tile);
+        delete tile->get_image();
+        delete tile;
+    }
+    tiles.clear();
+    initialized = false;
 }
