@@ -3,6 +3,7 @@
 
 bool MineToggleButton::on_button_press_event(GdkEventButton *event)
 {
+    return true;
 }
 
 bool MineToggleButton::on_button_release_event(GdkEventButton *event)
