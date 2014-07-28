@@ -52,15 +52,23 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
         for (int j = 0; j < sz.width; j++)
         {
             int loc = sz.width*i+j;
-            Tile *board_tile = game->get_board()[loc];
-            if (board_tile->is_swept() && !tiles->at(loc)->get_active())
+            if (tiles->at(loc) == this)
             {
-                tiles->at(loc)->set_active(true);
+                continue;
+            }
+            Tile *board_tile = game->get_board()[loc];
+            if (game->is_over() || (!board_tile->is_marked() &&
+                board_tile->is_swept() && !tiles->at(loc)->get_active()))
+            {
+                if (!game->is_over())
+                {
+                    tiles->at(loc)->set_active(true);
+                }
                 delete tiles->at(loc)->get_image();
                 val = board_tile->get_value();
                 if (val < 0)
                 {
-                    img_path = "res/mine_e.png";
+                    img_path = "res/mine.png";
                 }
                 else
                 {
