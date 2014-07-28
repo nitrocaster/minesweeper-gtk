@@ -31,7 +31,7 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
     delete get_image();
     marked = game->click(row, column);
     int w = game->get_width(), h = game->get_height();
-    int val = game->get_board().at(w*row+column)->get_value();
+    int val = game->get_board()[w*row+column]->get_value();
     std::string img_path;
     if (val < 0)
     {
