@@ -29,7 +29,6 @@ private:
 	int mined_tiles;
 	int unsafe_tiles;
 	std::vector<Tile*> board;
-	int time_remaining;
 	bool game_over;
 
 	std::unordered_set<int> corners;

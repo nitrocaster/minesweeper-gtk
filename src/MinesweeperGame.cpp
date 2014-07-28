@@ -9,7 +9,6 @@ MinesweeperGame::MinesweeperGame()
 MinesweeperGame::MinesweeperGame(int w, int h, int m)
 {
     mined_tiles = m;
-    time_remaining = 0;
     game_over = false;
     size = Size(w, h);
     int a = size.area();
@@ -227,7 +226,7 @@ bool MinesweeperGame::click(int row, int column)
             }
             if (unsafe_tiles == 0)
             {
-                // all unsafe tiles swept => win
+                // all safe tiles swept => win
                 game_over = true;
             }
             if (temp_t->get_value() != 0)
