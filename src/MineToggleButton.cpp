@@ -13,6 +13,7 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
     }
     if (event->button == 3)
     {
+        // RMB click => toggle flag
         delete get_image();
         auto img = new Gtk::Image(marked ? "res/0.png" : "res/flag.png");
         set_image(*img);
@@ -22,6 +23,7 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
     }
     if (event->button == 1 && marked)
     {
+        // LMB click on flagged tile => ignore
         return true;
     }
     set_active(true);
@@ -43,6 +45,7 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
     auto img = new Gtk::Image(img_path);
     set_image(*img);
     img->show();
+    // update all the rest of tiles
     for (int i = 0; i < h; i++)
     {
         for (int j = 0; j < w; j++)
