@@ -72,7 +72,7 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
     }
     if (game->is_over())
     {
-        std::string msg = game->get_unsafe_tile_count() == 0 ? "You win!" : "You lose =(";
+        std::string msg = game->get_unsafe_tile_count() == 0 ? "You win!" : "You lose.";
         Gtk::MessageDialog dialog(msg, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
         dialog.run();
         Gtk::Main::quit();
