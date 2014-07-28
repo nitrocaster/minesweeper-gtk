@@ -227,7 +227,7 @@ bool MinesweeperGame::click(int row, int column)
             }
             if (unsafe_tiles == 0)
             {
-                // all safe tiles swept => win
+                // all unsafe tiles swept => win
                 game_over = true;
             }
             if (temp_t->get_value() != 0)
