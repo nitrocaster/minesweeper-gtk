@@ -47,28 +47,26 @@ bool MineToggleButton::on_button_release_event(GdkEventButton *event)
     {
         for (int j = 0; j < w; j++)
         {
-            int loc = w * i + j;
-            if (game->get_board().at(loc)->is_swept())
+            int loc = w*i+j;
+            Tile *board_tile = game->get_board()[loc];
+            if (board_tile->is_swept() && !tiles->at(loc)->get_active())
             {
-                if (!tiles->at(loc)->get_active())
+                tiles->at(loc)->set_active(true);
+                delete tiles->at(loc)->get_image();
+                val = board_tile->get_value();
+                if (val < 0)
                 {
-                    tiles->at(loc)->set_active(true);
-                    delete tiles->at(loc)->get_image();
-                    val = game->get_board().at(loc)->get_value();
-                    if (val < 0)
-                    {
-                        img_path = "res/mine_e.png";
-                    }
-                    else
-                    {
-                        std::ostringstream convert;
-                        convert << val;
-                        img_path = "res/" + convert.str() + ".png";
-                    }
-                    img = new Gtk::Image(img_path);
-                    tiles->at(loc)->set_image(*img);
-                    img->show();
+                    img_path = "res/mine_e.png";
                 }
+                else
+                {
+                    std::ostringstream convert;
+                    convert << val;
+                    img_path = "res/" + convert.str() + ".png";
+                }
+                img = new Gtk::Image(img_path);
+                tiles->at(loc)->set_image(*img);
+                img->show();
             }
         }
     }
