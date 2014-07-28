@@ -38,8 +38,8 @@ private:
 	std::unordered_set<int> top_row;
 	std::unordered_set<int> bottom_row;
 
-	static int get_mine_count(MinesweeperGame& game, int num, ...);
-	void add_adjacent(std::queue<IndexedTile>& q, int num, ...);
+	int get_mine_count(std::initializer_list<int> indices);
+	void add_adjacent(std::queue<IndexedTile>& q, std::initializer_list<int> indices);
 
 public:
     MinesweeperGame();

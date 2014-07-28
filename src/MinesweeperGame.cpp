@@ -1,8 +1,5 @@
 #include <random>
-#include <algorithm>
-#include <array>
 #include <string>
-#include <cstdarg>
 #include "MinesweeperGame.hpp"
 
 MinesweeperGame::MinesweeperGame()
@@ -69,17 +66,29 @@ std::vector<Tile*> MinesweeperGame::get_board()
     return board;
 }
 
-int MinesweeperGame::get_mine_count(MinesweeperGame& game, int num, ...)
+int MinesweeperGame::get_mine_count(std::initializer_list<int> indices)
 {
-    std::vector<int> t(num);
-    va_list arguments;
-    va_start(arguments, num);
-    for (int i = 0; i < num; i++)
+    int mines = 0;
+    for (int loc : indices)
     {
-        t[i] = game.get_board()[va_arg(arguments, int)]->get_value();
+        if (board[loc]->get_value() < 0)
+        {
+            mines++;
+        }
     }
-	va_end(arguments);
-    return (int)std::count_if(t.begin(), t.end(), [](int val){ return val < 0; });
+    return mines;
+}
+
+void MinesweeperGame::add_adjacent(std::queue<IndexedTile> &q, std::initializer_list<int> indices)
+{
+    for (int loc : indices)
+    {
+        if (board[loc]->is_swept())
+        {
+            continue;
+        }
+        q.push({board[loc], loc});
+    }
 }
 
 MinesweeperGame MinesweeperGame::initialize(GameDifficulty difficulty)
@@ -131,42 +140,42 @@ MinesweeperGame MinesweeperGame::initialize(GameDifficulty difficulty)
         int val = 0;
         if (game.left_row.find(i) != game.left_row.end())
         {
-            val = get_mine_count(game, 5, i-w, i-w+1, i+1, i+w, i+w+1);
+            val = game.get_mine_count({i-w, i-w+1, i+1, i+w, i+w+1});
         }
         else if (game.right_row.find(i) != game.right_row.end())
         {
-            val = get_mine_count(game, 5, i-w, i-w-1, i-1, i+w, i+w-1);
+            val = game.get_mine_count({i-w, i-w-1, i-1, i+w, i+w-1});
         }
         else if (game.top_row.find(i) != game.top_row.end())
         {
-            val = get_mine_count(game, 5, i-1, i+1, i+w, i+w-1, i+w+1);
+            val = game.get_mine_count({i-1, i+1, i+w, i+w-1, i+w+1});
         }
         else if (game.bottom_row.find(i) != game.bottom_row.end())
         {
-            val = get_mine_count(game, 5, i-1, i+1, i-w, i-w-1, i-w+1);
+            val = game.get_mine_count({i-1, i+1, i-w, i-w-1, i-w+1});
         }
         else if (game.corners.find(i) != game.corners.end())
         {
             if (i == 0)
             {
-                val = get_mine_count(game, 3, i+1, i+w, i+w+1);
+                val = game.get_mine_count({i+1, i+w, i+w+1});
             }
             else if (i == w-1)
             {
-                val = get_mine_count(game, 3, i-1, i+w-1, i+w);
+                val = game.get_mine_count({i-1, i+w-1, i+w});
             }
             else if (i == w*h-w)
             {
-                val = get_mine_count(game, 3, i-w, i-w+1, i+1);
+                val = game.get_mine_count({i-w, i-w+1, i+1});
             }
             else
             {
-                val = get_mine_count(game, 3, i-w, i-w-1, i-1);
+                val = game.get_mine_count({i-w, i-w-1, i-1});
             }
         }
         else
         {
-            val = get_mine_count(game, 8, i-w-1, i-w, i-w+1, i-1, i+1, i+w-1, i+w, i+w+1);
+            val = game.get_mine_count({i-w-1, i-w, i-w+1, i-1, i+1, i+w-1, i+w, i+w+1});
         }
         game.get_board()[i]->set_value(val);
     }
@@ -181,22 +190,6 @@ void MinesweeperGame::exit()
     }
 }
 
-void MinesweeperGame::add_adjacent(std::queue<IndexedTile>& q, int num, ...)
-{
-    va_list arguments;
-    va_start(arguments, num);
-    for (int i = 0; i < num; i++)
-    {
-        int index = va_arg(arguments, int);
-        if (board[index]->is_swept())
-        {
-            continue;
-        }
-        q.push({board[index], index});
-    }
-    va_end(arguments);
-}
-
 void MinesweeperGame::mark_tile(int row, int column)
 {
     int w = size.width, h = size.height;
@@ -204,11 +197,11 @@ void MinesweeperGame::mark_tile(int row, int column)
     {
         return;
     }
-    if (board[size.width*row+column]->is_swept())
+    if (board[w*row+column]->is_swept())
     {
         return;
     }
-    board[size.width*row+column]->mark();
+    board[w*row+column]->mark();
 }
 
 bool MinesweeperGame::click(int row, int column)
@@ -243,42 +236,42 @@ bool MinesweeperGame::click(int row, int column)
             int i = itile.index;
             if (left_row.find(i) != left_row.end())
             {
-                add_adjacent(tile_queue, 5, i-w, i-w+1, i+1, i+w, i+w+1);
+                add_adjacent(tile_queue, {i-w, i-w+1, i+1, i+w, i+w+1});
             }
             else if (right_row.find(i) != right_row.end())
             {
-                add_adjacent(tile_queue, 5, i-w, i-w-1, i-1, i+w, i+w-1);
+                add_adjacent(tile_queue, {i-w, i-w-1, i-1, i+w, i+w-1});
             }
             else if (top_row.find(i) != top_row.end())
             {
-                add_adjacent(tile_queue, 5, i-1, i+1, i+w, i+w-1, i+w+1);
+                add_adjacent(tile_queue, {i-1, i+1, i+w, i+w-1, i+w+1});
             }
             else if (bottom_row.find(i) != bottom_row.end())
             {
-                add_adjacent(tile_queue, 5, i-1, i+1, i-w, i-w-1, i-w+1);
+                add_adjacent(tile_queue, {i-1, i+1, i-w, i-w-1, i-w+1});
             }
             else if (corners.find(i) != corners.end())
             {
                 if (i == 0)
                 {
-                    add_adjacent(tile_queue, 3, i+1, i+w, i+w+1);
+                    add_adjacent(tile_queue, {i+1, i+w, i+w+1});
                 }
                 else if (i == w-1)
                 {
-                    add_adjacent(tile_queue, 3, i-1, i+w-1, i+w);
+                    add_adjacent(tile_queue, {i-1, i+w-1, i+w});
                 }
                 else if (i == w*h-w)
                 {
-                    add_adjacent(tile_queue, 3, i-w, i-w+1, i+1);
+                    add_adjacent(tile_queue, {i-w, i-w+1, i+1});
                 }
                 else
                 {
-                    add_adjacent(tile_queue, 3, i-w, i-w-1, i-1);
+                    add_adjacent(tile_queue, {i-w, i-w-1, i-1});
                 }
             }
             else
             {
-                add_adjacent(tile_queue, 8, i-w-1, i-w, i-w+1, i-1, i+1, i+w-1, i+w, i+w+1);
+                add_adjacent(tile_queue, {i-w-1, i-w, i-w+1, i-1, i+1, i+w-1, i+w, i+w+1});
             }
         }
     }
