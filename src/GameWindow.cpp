@@ -7,7 +7,7 @@ GameWindow::GameWindow(GameDifficulty difficulty) :
 {
     initialized = false;
     initialize(difficulty);
-    set_border_width(25);
+    set_border_width(4);
     table.attach(grid, 0, 1, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::SHRINK);
     add(table);
     table.show();
