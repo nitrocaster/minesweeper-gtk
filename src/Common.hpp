@@ -10,7 +10,6 @@ enum class NoInit
     Dummy
 };
 
-
 struct Size
 {
     int width, height;
